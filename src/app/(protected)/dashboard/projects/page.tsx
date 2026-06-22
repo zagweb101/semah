@@ -28,7 +28,7 @@ export default async function ProjectsPage() {
         <div className="rounded-2xl border border-dashed border-border p-12 sm:p-16 text-center">
           <div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><FolderOpen className="size-8 text-violet" /></div>
           <h3 className="text-xl font-semibold mb-2">لا توجد مشاريع بعد</h3>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">ابدأ رحلتك في بناء الهوية بإنشاء أول مشروع.</p>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">ابدأ رحلتك في بناء الهوية المؤسسية بإنشاء أول مشروع.</p>
           <Button size="lg" nativeButton={false} render={<Link href="/dashboard/projects/new" />}><Plus className="size-4" />إنشاء أول مشروع</Button>
         </div>
       ) : (

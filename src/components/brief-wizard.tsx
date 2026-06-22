@@ -141,7 +141,7 @@ export function BriefWizard({ projectId, initialData, alreadyCompleted }: BriefW
               ))}
             </div>
             <div className="space-y-2">
-              <Label>الاتجاهات البصرية المفضّلة</Label>
+              <Label>الاتجاهات المؤسسية المفضّلة</Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {["Minimal", "Luxury", "Modern", "Editorial", "Corporate", "Playful", "Organic", "Futuristic", "Heritage"].map((v) => {
                   const selected = data.visualPreferences?.includes(v);

@@ -7,7 +7,7 @@ import { DirectionsGenerator, DirectionSelector } from "@/components/directions-
 import { getMockMode } from "@/lib/ai/utils";
 import type { VisualDirectionOutput } from "@/lib/ai/schemas/visual-direction-output";
 
-export const metadata = { title: "الاتجاهات البصرية" };
+export const metadata = { title: "الاتجاهات المؤسسية" };
 export const dynamic = "force-dynamic";
 
 export default async function DirectionsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -21,7 +21,7 @@ export default async function DirectionsPage({ params }: { params: Promise<{ id:
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
       <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="size-3.5" />العودة للمشروع</Link>
-      <div className="mb-8"><div className="flex items-center gap-2 text-sm text-muted-foreground mb-2"><Layers className="size-4 text-violet" /><span>الاتجاهات البصرية</span></div><h1 className="text-3xl sm:text-4xl font-bold tracking-tight">اتجاهات {project.nameAr}</h1><p className="mt-2 text-muted-foreground">ثلاثة اتجاهات بصرية متمايزة لاختيار الأنسب.</p></div>
+      <div className="mb-8"><div className="flex items-center gap-2 text-sm text-muted-foreground mb-2"><Layers className="size-4 text-violet" /><span>الاتجاهات المؤسسية</span></div><h1 className="text-3xl sm:text-4xl font-bold tracking-tight">اتجاهات {project.nameAr}</h1><p className="mt-2 text-muted-foreground">ثلاثة اتجاهات مؤسسية متمايزة لاختيار الأنسب.</p></div>
       <div className="card-premium p-6 mb-8"><DirectionsGenerator projectId={project.id} hasExisting={directions.length > 0} mockMode={mockMode} /></div>
       {directions.length > 0 ? (
         <div className="grid gap-6 lg:grid-cols-3">
@@ -45,7 +45,7 @@ export default async function DirectionsPage({ params }: { params: Promise<{ id:
           })}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Layers className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد اتجاهات بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على "توليد الاتجاهات البصرية" أعلاه.</p></div>
+        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Layers className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد اتجاهات بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على "توليد الاتجاهات المؤسسية" أعلاه.</p></div>
       )}
     </div>
   );

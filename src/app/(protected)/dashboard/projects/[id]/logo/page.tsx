@@ -31,7 +31,7 @@ export default async function LogoPage({ params }: { params: Promise<{ id: strin
                 <p className="text-muted-foreground leading-relaxed">{c.rationale}</p>
                 {c.symbolMeaning && <div><div className="text-xs font-medium mb-1">معنى الرمز</div><p className="text-muted-foreground">{c.symbolMeaning}</p></div>}
                 <div className="grid sm:grid-cols-2 gap-3">{c.typographyDirection && <div><div className="text-xs font-medium mb-1">اتجاه الخط</div><p className="text-muted-foreground">{c.typographyDirection}</p></div>}{c.colorDirection && <div><div className="text-xs font-medium mb-1">اتجاه الألوان</div><p className="text-muted-foreground">{c.colorDirection}</p></div>}</div>
-                <div className="rounded-xl border border-dashed border-border aspect-video flex items-center justify-center bg-muted/30"><div className="text-center"><Sparkles className="size-6 text-muted-foreground mx-auto mb-2" /><p className="text-xs text-muted-foreground">معاينة بصرية — تتطلب توليد صورة منفصل</p></div></div>
+                <div className="rounded-xl border border-dashed border-border aspect-video flex items-center justify-center bg-muted/30"><div className="text-center"><Sparkles className="size-6 text-muted-foreground mx-auto mb-2" /><p className="text-xs text-muted-foreground">معاينة مؤسسية — تتطلب توليد صورة منفصل</p></div></div>
                 <div className="text-xs text-muted-foreground bg-muted/30 rounded p-2 font-mono" dir="ltr">{c.prompt}</div>
               </div>
             </article>

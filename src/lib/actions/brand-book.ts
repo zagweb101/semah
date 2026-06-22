@@ -33,7 +33,7 @@ const BrandBookSchema = z.object({
   })),
 });
 
-const sheetPrompt = { name: "brand-sheet", version: "1.0.0", buildSystem: () => `أنت خبير هوية بصرية. ولّد Brand Sheet. أعد JSON يطابق الـschema.`, buildUser: (brief: BrandBriefInput) => `Brand: ${brief.nameAr}\nDescription: ${brief.description}\nSector: ${brief.sector}` };
+const sheetPrompt = { name: "brand-sheet", version: "1.0.0", buildSystem: () => `أنت خبير هوية مؤسسية. ولّد Brand Sheet. أعد JSON يطابق الـschema.`, buildUser: (brief: BrandBriefInput) => `Brand: ${brief.nameAr}\nDescription: ${brief.description}\nSector: ${brief.sector}` };
 const brandBookPrompt = { name: "brand-book", version: "1.0.0", buildSystem: () => `أنت خبير Brand Book. ولّد دليل علامة كامل بـ25 قسم. أعد JSON يطابق الـschema.`, buildUser: (brief: BrandBriefInput) => `Brand: ${brief.nameAr}\nDescription: ${brief.description}\nSector: ${brief.sector}` };
 
 export async function generateBrandSheetAction(projectId: string) {

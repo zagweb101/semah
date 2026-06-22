@@ -23,7 +23,7 @@ export function DirectionsGenerator({ projectId, hasExisting, mockMode }: { proj
       {mockMode && <div className="rounded-xl border border-gold/30 bg-gold/5 px-4 py-3 text-sm flex items-center gap-2"><AlertCircle className="size-4 text-gold" /><span><strong>وضع التجربة</strong></span></div>}
       {error && <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm flex items-center gap-2"><AlertCircle className="size-4 text-danger" /><span>{error}</span></div>}
       <div className="flex items-center gap-3">
-        <Button onClick={handleGenerate} disabled={isPending} size="lg">{isPending ? <><RefreshCw className="size-4 animate-spin" />جارٍ التوليد...</> : hasExisting ? <><RefreshCw className="size-4" />إعادة توليد الاتجاهات</> : <><Sparkles className="size-4" />توليد الاتجاهات البصرية</>}</Button>
+        <Button onClick={handleGenerate} disabled={isPending} size="lg">{isPending ? <><RefreshCw className="size-4 animate-spin" />جارٍ التوليد...</> : hasExisting ? <><RefreshCw className="size-4" />إعادة توليد الاتجاهات</> : <><Sparkles className="size-4" />توليد الاتجاهات المؤسسية</>}</Button>
         {hasExisting && !isPending && <span className="text-sm text-muted-foreground flex items-center gap-1"><CheckCircle2 className="size-3 text-success" />الاتجاهات جاهزة</span>}
         <span className="text-xs text-muted-foreground">التكلفة: 8 رصيد</span>
       </div>

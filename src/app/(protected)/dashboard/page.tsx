@@ -53,7 +53,7 @@ export default async function DashboardPage() {
         <CardContent className="flex flex-col items-center justify-center text-center py-16">
           <div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mb-4"><FolderOpen className="size-8 text-violet" /></div>
           <h3 className="text-xl font-semibold mb-2">لا توجد مشاريع بعد</h3>
-          <p className="text-muted-foreground mb-6 max-w-md">ابدأ رحلتك في بناء الهوية بإنشاء أول مشروع.</p>
+          <p className="text-muted-foreground mb-6 max-w-md">ابدأ رحلتك في بناء الهوية المؤسسية بإنشاء أول مشروع.</p>
           <Button size="lg" nativeButton={false} render={<Link href="/dashboard/projects/new" />}><Plus className="size-4" />إنشاء أول مشروع</Button>
         </CardContent>
       </Card>

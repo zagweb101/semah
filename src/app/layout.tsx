@@ -20,8 +20,8 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: { default: "سِمَة — SEMAH AI Brand Studio", template: "%s | سِمَة" },
-  description: "من فكرة إلى هوية تُعرَف. منصة الذكاء الاصطناعي لبناء أنظمة هوية بصرية متكاملة.",
-  keywords: ["هوية بصرية", "تصميم شعار", "Brand Book", "SEMAH", "سِمَة", "استراتيجية علامة تجارية"],
+  description: "من فكرة إلى هوية تُعرَف. منصة الذكاء الاصطناعي لبناء أنظمة هوية مؤسسية متكاملة.",
+  keywords: ["هوية مؤسسية", "تصميم شعار", "Brand Book", "SEMAH", "سِمَة", "استراتيجية علامة تجارية"],
   openGraph: { type: "website", locale: "ar_SA", title: "سِمَة — SEMAH AI Brand Studio", description: "من فكرة إلى هوية تُعرَف", siteName: "SEMAH" },
   robots: { index: true, follow: true },
 };

@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Palette, Type, Layers, Eye, BookOpen, Share2, Wand2, ShieldCheck, Clock, Users, ArrowLeft } from "lucide-react";
 
 const features = [
-  { icon: Wand2, title: "استراتيجية علامة متكاملة", description: "من الـBrand Brief إلى الرؤية والرسالة والقيم وشخصية العلامة ونبرة الصوت — كل شيء مولّد بالذكاء الاصطناعي وقابل للتعديل." },
-  { icon: Layers, title: "ثلاثة اتجاهات بصرية", description: "ليس اتجاهًا واحدًا. نولّد ثلاثة اتجاهات متمايزة مع وصف كامل للألوان والخطوط والصور والأشكال، لتختار الأنسب." },
+  { icon: Wand2, title: "استراتيجية هوية مؤسسية متكاملة", description: "من الـBrand Brief إلى الرؤية والرسالة والقيم المؤسسية والثقافة والسلوك ونبرة التواصل — كل شيء مولّد بالذكاء الاصطناعي وقابل للتعديل." },
+  { icon: Layers, title: "ثلاثة اتجاهات مؤسسية", description: "ليس اتجاهًا واحدًا. نولّد ثلاثة اتجاهات متمايزة مع وصف كامل للألوان والخطوط والصور والأشكال، لتختار الأنسب." },
   { icon: Palette, title: "لوحات ألوان ذكية", description: "11 لونًا لكل لوحة مع فحص WCAG للتباين، تصدير CSS Variables، ونسخ القيم بضغطة واحدة." },
   { icon: Type, title: "خطوط عربية وإنجليزية", description: "اقتراح خطوط مرخصة مع معاينات فعلية باستخدام اسم مشروعك، IBM Plex Sans Arabic، Alexandria، Manrope، والمزيد." },
   { icon: Eye, title: "Mood Boards", description: "ارفع صورك المرجعية أو ولّد صورًا جديدة بالذكاء الاصطناعي، رتّبها بالسحب والإفلات، وصدّرها بجودة عالية." },
   { icon: BookOpen, title: "Brand Book احترافي", description: "25 قسمًا قابلًا للتخصيص: الغلاف، القصة، الألوان، الخطوط، الاستخدام الصحيح والخاطئ، Design Tokens، والمزيد." },
   { icon: Share2, title: "بوابة عميل آمنة", description: "شارك المشروع مع عميل برابط آمن، كلمة مرور اختيارية، صلاحيات دقيقة، تعليقات، اعتمادات، وطلبات تعديل." },
   { icon: ShieldCheck, title: "عربي RTL أولًا", description: "بُنيت من الصفر للسوق العربي: واجهة RTL، خطوط عربية، تصدير PDF عربي A4، مع بنية قابلة لدعم الإنجليزية." },
-  { icon: Clock, title: "من ساعات إلى دقائق", description: "بدل أسابيع من البحث والتنسيق، احصل على نظام هوية متكامل جاهز للمراجعة خلال دقائق." },
+  { icon: Clock, title: "من ساعات إلى دقائق", description: "بدل أسابيع من البحث والتنسيق، احصل على نظام هوية مؤسسية متكامل جاهز للمراجعة خلال دقائق." },
 ];
 
 const steps = [
@@ -45,7 +45,7 @@ export default async function Home() {
             من فكرة إلى <span className="text-gradient-violet">هوية تُعرَف</span>
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground text-pretty sm:text-xl leading-relaxed">
-            سِمَة منصة متكاملة لبناء أنظمة الهوية البصرية — استراتيجية، اتجاهات بصرية، ألوان، خطوط، Mood Boards، شعارات، Brand Book، وبوابة عميل. كل ذلك خلال دقائق.
+            سِمَة منصة متكاملة لبناء أنظمة الهوية المؤسسية — استراتيجية مؤسسية، اتجاهات هوية، ألوان، خطوط، Mood Boards، شعارات، Brand Book، وبوابة عميل. كل ذلك خلال دقائق.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             {session ? (
@@ -63,7 +63,7 @@ export default async function Home() {
 
       <section className="mx-auto max-w-6xl px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold tracking-tight">كل ما تحتاجه لبناء هوية</h2>
+          <h2 className="text-4xl font-bold tracking-tight">كل ما تحتاجه لبناء هوية مؤسسية متكاملة</h2>
           <p className="mt-3 text-lg text-muted-foreground">٩ مزايا إنتاجية جاهزة، ليست مجرد مولّد شعارات</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

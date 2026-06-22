@@ -2,7 +2,7 @@
   "name": "semah",
   "version": "0.1.0",
   "private": true,
-  "description": "SEMAH AI Brand Studio — من فكرة إلى هوية تُعرَف",
+  "description": "SEMAH Corporate Identity Studio — من فكرة إلى هوية تُعرَف",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
