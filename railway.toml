@@ -1,5 +1,12 @@
+[build]
+builder = "nixpacks"
+
+[build.nixpacks]
+# Explicit build command to ensure prisma generate runs during build
+buildCommand = "npx prisma generate && npm run build"
+
 [deploy]
-startCommand = "npx prisma generate && npm run start"
+startCommand = "npm run start"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
