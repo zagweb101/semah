@@ -1,8 +1,5 @@
-[build]
-builder = "dockerfile"
-
 [deploy]
-startCommand = "node server.js"
+startCommand = "npx prisma generate && npm run start"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 60
 restartPolicyType = "ON_FAILURE"
