@@ -1,0 +1,15 @@
+{
+  "template": "DEFAULT",
+  "fields": {
+    "logo": "{{projectName}}",
+    "primaryColor": "#6D4AFF",
+    "secondaryColor": "#F46F5E",
+    "accentColor": "#C99A3D",
+    "arabicFont": "IBM Plex Sans Arabic",
+    "englishFont": "Manrope",
+    "personality": ["أصيل", "مبتكر", "موثوق", "قريب"],
+    "keywords": ["جودة", "ابتكار", "أصالة", "قرب"],
+    "imageStyle": "صور طبيعية بإضاءة دافئة، تركيز على التفاصيل الإنسانية",
+    "usageExamples": ["بطاقة عمل بسيطة بشعار وألوان العلامة", "تغليف منتج بالألوان الأساسية", "ترويسة موقع إلكتروني"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "strategy": "استراتيجية الشعار لـ {{projectName}} تعتمد على دمج البساطة مع لمسة عربية مميزة.",
+  "concepts": [
+    { "name": "البصمة الأصيلة", "conceptDescription": "تصميم يعتمد على تحويل حرف البداية من اسم {{projectName}} إلى بصمة رقمية تنبض بالحياة.", "symbolMeaning": "البصمة ترمز إلى التفرد والانتماء في آن واحد.", "typographyDirection": "اسم {{projectName}} بخط Sans-serif عربي حديث.", "colorDirection": "بنفسجي #6D4AFF كلون أساسي مع رمادي فحمي للنصوص.", "composition": "الرمز على اليمين، الاسم على اليسار.", "prompt": "Minimal Arabic logo concept for {{projectName}}, modern, professional", "approvalStatus": "PENDING" },
+    { "name": "القوس العضوي", "conceptDescription": "استلهام القوس الإسلامي المعروف وتجريده إلى شكل عضوي بسيط يضم اسم {{projectName}}.", "symbolMeaning": "القوس يرمز إلى الاحتضان والترحيب.", "typographyDirection": "اسم {{projectName}} بخط Diwani حديث.", "colorDirection": "تيراكوتا #B85C3A مع بيج كريمي.", "composition": "القوس يحتضن الاسم من الأعلى.", "prompt": "Arabic logo concept inspired by Islamic arch, organic", "approvalStatus": "PENDING" },
+    { "name": "التكوين الهندسي", "conceptDescription": "استخدام الأشكال الهندسية الأساسية لبناء رمز ينطوي على اسم {{projectName}}.", "symbolMeaning": "التكوين الهندسي يرمز إلى النظام والدقة والثقة.", "typographyDirection": "اسم {{projectName}} بخط Display جريء.", "colorDirection": "أبيض وأسود مع لمسة من الذهبي #C99A3D.", "composition": "رمز هندسي على اليمين، الاسم على اليسار.", "prompt": "Geometric minimalist logo concept for {{projectName}}", "approvalStatus": "PENDING" }
+  ],
+  "wordmarkDirections": ["Wordmark بسيط بأحرف عربية بأوزان مختلفة", "Wordmark ثنائي اللغة", "Wordmark بأحرف متصلة بأسلوب خط حديث"],
+  "symbolDirections": ["رمز مجرد يعبّر عن البصمة", "رمز هندسي بسيط قابل للتكرار", "رمز عضوي مستوحى من الطبيعة"],
+  "monogramIdeas": ["حرف أول من {{projectName}} داخل دائرة", "حرفين أولين متداخلين بأناقة", "اختصار من 3 حروف بأسلوب هندسي"],
+  "arabicWordmarkIdeas": ["{{projectName}} بخط كوفي حديث", "{{projectName}} بخط الثلث بأوزان معاصرة", "{{projectName}} بخط رقعة مبسّط"],
+  "englishWordmarkIdeas": ["{{projectName}} بخط Display جريء", "{{projectName}} بخط Serif كلاسيكي", "{{projectName}} بخط Sans-serif مينيمال"],
+  "bilingualIdeas": ["النسخة العربية فوق الإنجليزية", "النسخة العربية بجانب الإنجليزية", "النسخة العربية أكبر من الإنجليزية"],
+  "appIconIdeas": ["أيقونة مربعة بالرمز فقط", "أيقونة بحرف أول على خلفية متدرجة", "أيقونة بالرمز الأبيض على خلفية داكنة"],
+  "faviconIdeas": ["نسخة مصغرة من الرمز", "حرف أول داخل دائرة مملوءة", "نسخة أحادية اللون"],
+  "disclaimer": "المعاينات المولّدة هي Concept Previews تجريبية، وليست ملفات Vector نهائية. يجب مراجعة المفهوم قبل الاستخدام التجاري."
+}

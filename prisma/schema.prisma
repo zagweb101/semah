@@ -1,4 +1,4 @@
-// Prisma schema — learn more: https://pris.ly/d/prisma-schema
+// Prisma schema — SEMAH AI Brand Studio
 
 generator client {
   provider = "prisma-client"
@@ -25,6 +25,26 @@ model User {
   posts         BlogPost[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+
+  createdBrandProjects       BrandProject[]
+  projectMemberships         ProjectMember[]
+  lastSavedBriefs            BrandBrief[]       @relation("BrandBriefLastSaver")
+  createdBriefVersions       BrandBriefVersion[]
+  createdStrategies          BrandStrategy[]
+  createdShareLinks          ShareLink[]
+  commentAuthors             Comment[]          @relation("CommentAuthor")
+  commentReplies             CommentReply[]     @relation("CommentReplyAuthor")
+  approvalsAsApprover        Approval[]         @relation("ApprovalApprover")
+  revisionRequests           RevisionRequest[] @relation("RevisionRequester")
+  uploadedAssets             Asset[]
+  initiatedExports           Export[]
+  initiatedAIJobs            AIJob[]
+  aiUsageRecords             AIUsage[]
+  editedGenerationVersions   GenerationVersion[] @relation("GenerationVersionEditor")
+  projectActivities          ProjectActivity[]  @relation("ProjectActivityUser")
+  creditTransactions         CreditTransaction[] @relation("CreditTransactionUser")
+  adminAdjustments           CreditTransaction[] @relation("CreditTransactionAdmin")
+  auditLogs                  AuditLog[]
 }
 
 model Account {
@@ -41,7 +61,6 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@unique([provider, providerAccountId])
 }
 
@@ -57,11 +76,8 @@ model VerificationToken {
   identifier String
   token      String
   expires    DateTime
-
   @@unique([identifier, token])
 }
-
-// ── Stripe Subscriptions ────────────────────────────────
 
 enum SubscriptionStatus {
   ACTIVE
@@ -87,8 +103,6 @@ model Subscription {
   updatedAt            DateTime            @updatedAt
 }
 
-// ── Organizations / Teams ───────────────────────────────
-
 enum Role {
   OWNER
   ADMIN
@@ -105,6 +119,16 @@ model Organization {
   memberships Membership[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  workspaceSettings  WorkspaceSettings?
+  brandProjects      BrandProject[]
+  aiProviderConfigs  AIProviderConfig[]
+  aiJobs             AIJob[]
+  aiUsageRecords     AIUsage[]
+  assets             Asset[]
+  exports            Export[]
+  auditLogs          AuditLog[]
+  creditWallet       CreditWallet?
 }
 
 model Membership {
@@ -115,11 +139,9 @@ model Membership {
   user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt       DateTime     @default(now())
-
+  updatedAt       DateTime     @updatedAt
   @@unique([userId, organizationId])
 }
-
-// ── Notifications ────────────────────────────────────────
 
 model Notification {
   id        String   @id @default(cuid())
@@ -130,9 +152,9 @@ model Notification {
   type      String   @default("info")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  relatedEntityType String?
+  relatedEntityId   String?
 }
-
-// ── Blog / CMS ───────────────────────────────────────────
 
 model BlogPost {
   id          String    @id @default(cuid())
@@ -146,4 +168,874 @@ model BlogPost {
   author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// ── SEMAH Domain Enums ────────────────────────────────────
+
+enum ProjectStatus {
+  DRAFT
+  BRIEF_IN_PROGRESS
+  READY_FOR_ANALYSIS
+  ANALYZING
+  STRATEGY_READY
+  VISUAL_DIRECTIONS_READY
+  INTERNAL_REVIEW
+  CLIENT_REVIEW
+  REVISION_REQUESTED
+  APPROVED
+  DELIVERED
+  ARCHIVED
+}
+
+enum ProjectRole {
+  PROJECT_OWNER
+  CREATIVE_DIRECTOR
+  DESIGNER
+  CONTRIBUTOR
+}
+
+enum BriefStatus {
+  DRAFT
+  COMPLETED
+}
+enum VisualDirectionStatus {
+  GENERATED
+  PINNED
+  SELECTED
+  DISCARDED
+}
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum CommentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  REOPENED
+}
+enum AuthorType {
+  TEAM
+  CLIENT
+}
+enum MoodboardItemSource {
+  GENERATED
+  UPLOADED
+  EXTERNAL_REFERENCE
+}
+
+enum ColorRole {
+  PRIMARY
+  SECONDARY
+  ACCENT
+  BACKGROUND
+  SURFACE
+  TEXT_PRIMARY
+  TEXT_SECONDARY
+  MUTED
+  BORDER
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum AccessibilityLevel {
+  AA_PASS
+  AA_FAIL
+  AAA_PASS
+}
+enum TypographyStyleName {
+  DISPLAY
+  HEADING
+  BODY
+  CAPTION
+  BUTTON
+}
+enum LogoAssetType {
+  RASTER_PREVIEW
+  SVG
+  APP_ICON
+  FAVICON
+}
+
+enum BrandBookSectionType {
+  COVER
+  ABOUT
+  STORY
+  VISION
+  MISSION
+  VALUES
+  AUDIENCE
+  PERSONALITY
+  POSITIONING
+  TONE
+  LOGO
+  LOGO_VARIATIONS
+  SAFE_AREA
+  MIN_SIZE
+  CORRECT_USE
+  WRONG_USE
+  COLORS
+  TYPOGRAPHY
+  MOODBOARD
+  IMAGE_STYLE
+  PATTERNS
+  ICONS
+  APPLICATIONS
+  DESIGN_TOKENS
+  CONTACT
+}
+
+enum BrandSheetTemplate {
+  DEFAULT
+  MINIMAL
+  EDITORIAL
+}
+enum BrandBookLayout {
+  CLASSIC
+  MODERN
+  EDITORIAL
+}
+
+enum GenerationType {
+  BRAND_STRATEGY
+  AUDIENCE_PERSONAS
+  VISUAL_DIRECTIONS
+  COLOR_PALETTE
+  TYPOGRAPHY_SYSTEM
+  MOODBOARD_GENERATION
+  MOODBOARD_ITEM_REGENERATION
+  LOGO_CONCEPTS
+  LOGO_PREVIEWS
+  BRAND_SHEET
+  BRAND_BOOK
+  PDF_EXPORT
+  HIGH_RES_EXPORT
+}
+
+enum AIJobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+enum AIProviderType {
+  MOCK
+  OPENAI_COMPATIBLE
+  OPENAI_IMAGE
+}
+enum AIProviderKind {
+  TEXT
+  IMAGE
+}
+enum HealthStatus {
+  HEALTHY
+  DEGRADED
+  DOWN
+  UNKNOWN
+}
+
+enum CreditTransactionType {
+  CREDIT
+  DEBIT
+  RESERVATION
+  CAPTURE
+  REFUND
+  ADJUSTMENT
+  EXPIRATION
+  BONUS
+}
+
+enum CreditOperationType {
+  BRAND_STRATEGY
+  AUDIENCE_PERSONAS
+  VISUAL_DIRECTIONS
+  COLOR_PALETTE
+  TYPOGRAPHY_SYSTEM
+  MOODBOARD_GENERATION
+  MOODBOARD_ITEM_REGENERATION
+  LOGO_CONCEPTS
+  LOGO_PREVIEWS
+  BRAND_SHEET
+  BRAND_BOOK
+  PDF_EXPORT
+  HIGH_RES_EXPORT
+}
+
+enum AssetType {
+  IMAGE
+  LOGO
+  REFERENCE
+  PDF
+  EXPORT
+  BRAND_ASSET
+}
+enum ExportType {
+  BRAND_SHEET_PDF
+  BRAND_BOOK_PDF
+  MOODBOARD_PNG
+  COLOR_PALETTE_PNG
+  COLOR_PALETTE_JSON
+  TYPOGRAPHY_JSON
+  DESIGN_TOKENS_JSON
+  CSS_VARIABLES
+  TAILWIND_THEME
+  ZIP_ASSETS
+}
+enum ExportStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ProjectActivityType {
+  CREATED
+  BRIEF_UPDATED
+  STRATEGY_GENERATED
+  DIRECTION_SELECTED
+  PALETTE_GENERATED
+  TYPOGRAPHY_GENERATED
+  MOODBOARD_UPDATED
+  LOGO_GENERATED
+  SHEET_CREATED
+  BOOK_CREATED
+  SHARED
+  COMMENTED
+  APPROVED
+  REVISION_REQUESTED
+  STATUS_CHANGED
+  ARCHIVED
+  RESTORED
+}
+
+enum CommentRelatedEntityType {
+  PROJECT
+  STRATEGY_SECTION
+  VISUAL_DIRECTION
+  MOODBOARD_ITEM
+  COLOR_PALETTE
+  TYPOGRAPHY
+  LOGO_CONCEPT
+  BRAND_BOOK_SECTION
+}
+
+enum ApprovalEntityType {
+  VISUAL_DIRECTION
+  COLOR_PALETTE
+  TYPOGRAPHY
+  LOGO_CONCEPT
+  BRAND_BOOK
+  PROJECT
+}
+
+// ── SEMAH Domain Models ───────────────────────────────────
+
+model WorkspaceSettings {
+  id                    String       @id @default(cuid())
+  organizationId        String       @unique
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  defaultLocale         String       @default("ar")
+  defaultDirection      String       @default("rtl")
+  brandColor            String?
+  defaultProjectLanguage String      @default("ar")
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+}
+
+model BrandProject {
+  id             String        @id @default(cuid())
+  organizationId String
+  nameAr         String
+  nameEn         String?
+  slug           String
+  status         ProjectStatus @default(DRAFT)
+  createdBy      String
+  creator        User          @relation(fields: [createdBy], references: [id])
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  archivedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  brief              BrandBrief?
+  strategies         BrandStrategy[]
+  visualDirections   VisualDirection[]
+  moodboards         Moodboard[]
+  colorPalettes      ColorPalette[]
+  typographySystems  TypographySystem[]
+  logoConcepts       LogoConcept[]
+  brandSheet         BrandSheet?
+  brandBooks         BrandBook[]
+  generations        Generation[]
+  projectMembers     ProjectMember[]
+  projectClients     ProjectClient[]
+  comments           Comment[]
+  approvals          Approval[]
+  revisionRequests   RevisionRequest[]
+  shareLinks         ShareLink[]
+  aiJobs             AIJob[]
+  activities         ProjectActivity[]
+  assets             Asset[]
+  exports            Export[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, status])
+  @@index([organizationId, updatedAt])
+  @@index([createdBy])
+}
+
+model ProjectMember {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  userId         String
+  role           ProjectRole  @default(CONTRIBUTOR)
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  @@unique([brandProjectId, userId])
+  @@index([userId])
+}
+
+model ProjectClient {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  name           String
+  email          String
+  company        String?
+  phone          String?
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  @@index([brandProjectId])
+}
+
+model BrandBrief {
+  id              String       @id @default(cuid())
+  brandProjectId  String       @unique
+  version         Int          @default(1)
+  data            Json
+  status          BriefStatus  @default(DRAFT)
+  lastSavedAt     DateTime?
+  lastSavedBy     String?
+  lastSavedByUser User?        @relation("BrandBriefLastSaver", fields: [lastSavedBy], references: [id])
+  brandProject    BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  versions        BrandBriefVersion[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model BrandBriefVersion {
+  id            String     @id @default(cuid())
+  brandBriefId  String
+  version       Int
+  data          Json
+  createdBy     String
+  creator       User       @relation(fields: [createdBy], references: [id])
+  changeNote    String?
+  brandBrief    BrandBrief @relation(fields: [brandBriefId], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  @@unique([brandBriefId, version])
+  @@index([brandBriefId])
+}
+
+model BrandStrategy {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  version        Int          @default(1)
+  data           Json
+  promptVersion  String
+  provider       String
+  model          String
+  createdBy      String
+  creator        User         @relation(fields: [createdBy], references: [id])
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  isCurrent      Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  @@unique([brandProjectId, version])
+  @@index([brandProjectId, isCurrent])
+}
+
+model VisualDirection {
+  id             String                @id @default(cuid())
+  brandProjectId String
+  version        Int                   @default(1)
+  data           Json
+  status         VisualDirectionStatus @default(GENERATED)
+  promptVersion  String
+  provider       String
+  model          String
+  brandProject   BrandProject          @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  isCurrent      Boolean               @default(true)
+  createdAt      DateTime              @default(now())
+  @@index([brandProjectId, status])
+  @@index([brandProjectId, isCurrent])
+}
+
+model Moodboard {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  version        Int          @default(1)
+  isCurrent      Boolean      @default(true)
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  items          MoodboardItem[]
+  createdAt      DateTime     @default(now())
+  @@index([brandProjectId, isCurrent])
+}
+
+model MoodboardItem {
+  id             String              @id @default(cuid())
+  moodboardId    String
+  order          Int
+  source         MoodboardItemSource
+  provider       String?
+  promptVersion  String?
+  generationId   String?
+  assetId        String?
+  externalUrl    String?
+  caption        String?
+  notes          String?
+  locked         Boolean             @default(false)
+  width          Int?
+  height         Int?
+  moodboard      Moodboard           @relation(fields: [moodboardId], references: [id], onDelete: Cascade)
+  createdAt      DateTime            @default(now())
+  @@unique([moodboardId, order])
+  @@index([moodboardId])
+}
+
+model ColorPalette {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  version        Int          @default(1)
+  isCurrent      Boolean      @default(true)
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  swatches       ColorSwatch[]
+  createdAt      DateTime     @default(now())
+  @@index([brandProjectId, isCurrent])
+}
+
+model ColorSwatch {
+  id                  String             @id @default(cuid())
+  paletteId           String
+  role                ColorRole
+  name                String
+  hex                 String
+  rgb                 String
+  hsl                 String
+  cmykApprox          String
+  usage               String?
+  percentage          Int?
+  contrastOnWhite     Float?
+  contrastOnBlack     Float?
+  accessibility       AccessibilityLevel?
+  suggestedForeground String?
+  locked              Boolean            @default(false)
+  palette             ColorPalette       @relation(fields: [paletteId], references: [id], onDelete: Cascade)
+  @@unique([paletteId, role])
+  @@index([paletteId])
+}
+
+model TypographySystem {
+  id             String       @id @default(cuid())
+  brandProjectId String
+  version        Int          @default(1)
+  isCurrent      Boolean      @default(true)
+  data           Json
+  brandProject   BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  styles         TypographyStyle[]
+  createdAt      DateTime     @default(now())
+  @@index([brandProjectId, isCurrent])
+}
+
+model TypographyStyle {
+  id                 String             @id @default(cuid())
+  typographySystemId String
+  name               TypographyStyleName
+  fontFamily         String
+  fontWeight         Int
+  fontSize           String
+  lineHeight         String
+  letterSpacing      String?
+  paragraphSpacing   String?
+  typographySystem   TypographySystem   @relation(fields: [typographySystemId], references: [id], onDelete: Cascade)
+  @@unique([typographySystemId, name])
+}
+
+model LogoConcept {
+  id                 String         @id @default(cuid())
+  brandProjectId     String
+  version            Int            @default(1)
+  name               String
+  rationale          String         @db.Text
+  symbolMeaning      String?
+  typographyDirection String?
+  colorDirection     String?
+  composition        String?
+  prompt             String         @db.Text
+  approvalStatus     ApprovalStatus @default(PENDING)
+  brandProject       BrandProject   @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  assets             LogoAsset[]
+  createdAt          DateTime       @default(now())
+  @@index([brandProjectId, approvalStatus])
+}
+
+model LogoAsset {
+  id            String      @id @default(cuid())
+  logoConceptId String
+  type          LogoAssetType
+  assetId       String
+  isVector      Boolean      @default(false)
+  metadata      Json
+  logoConcept   LogoConcept  @relation(fields: [logoConceptId], references: [id], onDelete: Cascade)
+  asset         Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  @@index([logoConceptId])
+}
+
+model BrandSheet {
+  id             String             @id @default(cuid())
+  brandProjectId String             @unique
+  template       BrandSheetTemplate @default(DEFAULT)
+  data           Json
+  version        Int                @default(1)
+  isCurrent      Boolean            @default(true)
+  brandProject   BrandProject       @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model BrandBook {
+  id             String           @id @default(cuid())
+  brandProjectId String
+  version        Int              @default(1)
+  isCurrent      Boolean          @default(true)
+  coverAssetId   String?
+  layout         BrandBookLayout  @default(CLASSIC)
+  brandProject   BrandProject     @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  sections       BrandBookSection[]
+  createdAt      DateTime         @default(now())
+  @@index([brandProjectId, isCurrent])
+}
+
+model BrandBookSection {
+  id            String               @id @default(cuid())
+  brandBookId   String
+  order         Int
+  type          BrandBookSectionType
+  title         String
+  content       Json
+  hidden        Boolean              @default(false)
+  customAssetId String?
+  brandBook     BrandBook            @relation(fields: [brandBookId], references: [id], onDelete: Cascade)
+  @@unique([brandBookId, type])
+  @@index([brandBookId, order])
+}
+
+model ShareLink {
+  id               String       @id @default(cuid())
+  brandProjectId   String
+  token            String       @unique
+  passwordHash     String?
+  expiresAt        DateTime?
+  allowDownload    Boolean      @default(false)
+  allowComment     Boolean      @default(true)
+  allowApprove     Boolean      @default(false)
+  revokedAt        DateTime?
+  lastAccessedAt   DateTime?
+  lastAccessIpHash String?
+  createdById      String
+  createdBy        User         @relation(fields: [createdById], references: [id])
+  brandProject     BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  createdAt        DateTime     @default(now())
+  @@index([brandProjectId])
+}
+
+model Comment {
+  id                String                 @id @default(cuid())
+  brandProjectId    String
+  authorId          String?
+  authorName        String
+  authorType        AuthorType
+  relatedEntityType CommentRelatedEntityType
+  relatedEntityId   String
+  relatedVersion    Int?
+  body              String                 @db.Text
+  mentions          Json?
+  status            CommentStatus          @default(OPEN)
+  brandProject      BrandProject           @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  author            User?                  @relation("CommentAuthor", fields: [authorId], references: [id])
+  replies           CommentReply[]
+  attachments       Asset[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  @@index([brandProjectId, relatedEntityType, relatedEntityId])
+  @@index([brandProjectId, status])
+}
+
+model CommentReply {
+  id          String   @id @default(cuid())
+  commentId   String
+  authorId    String?
+  authorName  String
+  authorType  AuthorType
+  body        String   @db.Text
+  comment     Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  author      User?    @relation("CommentReplyAuthor", fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  @@index([commentId])
+}
+
+model Approval {
+  id                 String            @id @default(cuid())
+  brandProjectId     String
+  approverType       AuthorType
+  approverId         String?
+  approverName       String
+  approvedEntityType ApprovalEntityType
+  approvedEntityId   String
+  approvedVersion    Int?
+  comment            String?
+  ipHash             String?
+  brandProject       BrandProject      @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  approver           User?             @relation("ApprovalApprover", fields: [approverId], references: [id])
+  createdAt          DateTime          @default(now())
+  @@index([brandProjectId, approvedEntityType, approvedEntityId])
+}
+
+model RevisionRequest {
+  id                String                 @id @default(cuid())
+  brandProjectId    String
+  requestedByType   AuthorType
+  requestedById     String?
+  requestedByName   String
+  relatedEntityType CommentRelatedEntityType
+  relatedEntityId   String
+  description       String                 @db.Text
+  status            CommentStatus          @default(OPEN)
+  brandProject      BrandProject           @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  requester         User?                  @relation("RevisionRequester", fields: [requestedById], references: [id])
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  @@index([brandProjectId, status])
+}
+
+model Asset {
+  id                String      @id @default(cuid())
+  organizationId    String
+  brandProjectId    String?
+  uploadedById      String
+  type              AssetType
+  uploadThingKey    String?
+  url               String
+  filename          String
+  mimeType          String
+  size              Int
+  width             Int?
+  height            Int?
+  hash              String?
+  metadata          Json
+  user              User        @relation(fields: [uploadedById], references: [id])
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  brandProject      BrandProject? @relation(fields: [brandProjectId], references: [id], onDelete: SetNull)
+  logoAssets        LogoAsset[]
+  commentAttachments Comment[]
+  exportResults     Export[]    @relation("ExportAsset")
+  createdAt         DateTime    @default(now())
+  deletedAt         DateTime?
+  @@index([organizationId, type])
+  @@index([brandProjectId])
+  @@index([hash])
+}
+
+model Export {
+  id              String       @id @default(cuid())
+  organizationId  String
+  brandProjectId  String
+  userId          String
+  type            ExportType
+  status          ExportStatus @default(QUEUED)
+  assetId         String?
+  version         Int?
+  metadata        Json
+  brandProject    BrandProject @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [userId], references: [id])
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  asset           Asset?       @relation("ExportAsset", fields: [assetId], references: [id])
+  createdAt       DateTime     @default(now())
+  completedAt     DateTime?
+  @@index([brandProjectId, type])
+  @@index([status])
+}
+
+model AIProviderConfig {
+  id              String         @id @default(cuid())
+  organizationId  String?
+  kind            AIProviderKind
+  provider        AIProviderType
+  model           String
+  baseUrl         String?
+  apiKeyRef       String
+  isActive        Boolean        @default(true)
+  healthStatus    HealthStatus   @default(UNKNOWN)
+  lastHealthCheck DateTime?
+  metadata        Json
+  organization    Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  @@index([organizationId, kind, isActive])
+}
+
+model AIJob {
+  id                String        @id @default(cuid())
+  organizationId    String
+  brandProjectId    String?
+  userId            String
+  generationType    GenerationType
+  provider          String
+  model             String
+  status            AIJobStatus   @default(QUEUED)
+  progress          Int           @default(0)
+  inputHash         String
+  idempotencyKey    String        @unique
+  inputMetadata     Json
+  outputMetadata    Json?
+  attempts          Int           @default(0)
+  maxAttempts       Int           @default(3)
+  errorCode         String?
+  safeErrorMessage  String?
+  reservedCredits   Int           @default(0)
+  actualCredits     Int           @default(0)
+  estimatedCost     Float?
+  actualCost        Float?
+  promptVersion     String?
+  brandProject      BrandProject? @relation(fields: [brandProjectId], references: [id], onDelete: SetNull)
+  user              User          @relation(fields: [userId], references: [id])
+  organization      Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  generation        Generation?
+  usageRecords      AIUsage[]
+  createdAt         DateTime      @default(now())
+  startedAt         DateTime?
+  finishedAt        DateTime?
+  cancelledAt       DateTime?
+  @@index([organizationId, status])
+  @@index([brandProjectId, status])
+  @@index([userId, createdAt])
+}
+
+model Generation {
+  id              String        @id @default(cuid())
+  aiJobId         String        @unique
+  brandProjectId  String
+  generationType  GenerationType
+  output          Json
+  provider        String
+  model           String
+  promptVersion   String
+  inputHash       String
+  tokensUsed      Int?
+  costEstimate    Float?
+  aiJob           AIJob         @relation(fields: [aiJobId], references: [id], onDelete: Cascade)
+  brandProject    BrandProject  @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  versions        GenerationVersion[]
+  createdAt       DateTime      @default(now())
+  @@index([brandProjectId, generationType])
+}
+
+model GenerationVersion {
+  id            String     @id @default(cuid())
+  generationId  String
+  version       Int
+  output        Json
+  editedBy      String?
+  editor        User?      @relation("GenerationVersionEditor", fields: [editedBy], references: [id])
+  generation    Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  editedAt      DateTime   @default(now())
+  @@unique([generationId, version])
+}
+
+model AIUsage {
+  id              String        @id @default(cuid())
+  organizationId  String
+  userId          String
+  aiJobId         String?
+  generationType  GenerationType
+  provider        String
+  model           String
+  tokensIn        Int           @default(0)
+  tokensOut       Int           @default(0)
+  imagesGenerated Int           @default(0)
+  costEstimate    Float         @default(0)
+  user            User          @relation(fields: [userId], references: [id])
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiJob           AIJob?        @relation(fields: [aiJobId], references: [id], onDelete: SetNull)
+  createdAt       DateTime      @default(now())
+  @@index([organizationId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model CreditWallet {
+  id              String       @id @default(cuid())
+  organizationId  String       @unique
+  balance         Int           @default(0)
+  reserved        Int           @default(0)
+  totalGranted    Int           @default(0)
+  totalSpent      Int           @default(0)
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transactions    CreditTransaction[]
+  updatedAt       DateTime      @updatedAt
+  @@index([organizationId])
+}
+
+model CreditTransaction {
+  id              String                 @id @default(cuid())
+  organizationId  String
+  walletId        String
+  userId          String
+  brandProjectId  String?
+  aiJobId         String?
+  type            CreditTransactionType
+  operationType   CreditOperationType?
+  amount          Int
+  balanceBefore   Int
+  balanceAfter    Int
+  idempotencyKey  String                 @unique
+  reason          String?
+  adminId         String?
+  wallet          CreditWallet           @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  user            User                   @relation("CreditTransactionUser", fields: [userId], references: [id])
+  admin           User?                  @relation("CreditTransactionAdmin", fields: [adminId], references: [id])
+  createdAt       DateTime               @default(now())
+  @@index([organizationId, createdAt])
+  @@index([walletId, createdAt])
+  @@index([aiJobId])
+}
+
+model ProjectActivity {
+  id              String               @id @default(cuid())
+  brandProjectId  String
+  userId          String?
+  type            ProjectActivityType
+  metadata        Json
+  brandProject    BrandProject         @relation(fields: [brandProjectId], references: [id], onDelete: Cascade)
+  user            User?                @relation("ProjectActivityUser", fields: [userId], references: [id])
+  createdAt       DateTime             @default(now())
+  @@index([brandProjectId, createdAt])
+}
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  organizationId  String?
+  userId          String?
+  action          String
+  resourceType    String
+  resourceId      String?
+  metadata        Json
+  ipHash          String?
+  userAgent       String?
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+  @@index([organizationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
 }

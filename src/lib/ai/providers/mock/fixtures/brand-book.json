@@ -1,0 +1,30 @@
+{
+  "layout": "CLASSIC",
+  "sections": [
+    { "type": "COVER", "title": "دليل العلامة التجارية", "content": { "subtitle": "{{projectName}}", "year": "2026" }, "hidden": false },
+    { "type": "ABOUT", "title": "نبذة", "content": { "body": "{{projectName}} علامة تجارية ناشئة تهدف إلى تقديم قيمة فريدة في سوقها من خلال الجمع بين الأصالة والابتكار." }, "hidden": false },
+    { "type": "STORY", "title": "قصة العلامة", "content": { "body": "بدأت رحلة {{projectName}} من إيمان عميق بأن السوق يحتاج إلى صوت جديد يجمع بين الاحترافية والقرب من العميل." }, "hidden": false },
+    { "type": "VISION", "title": "الرؤية", "content": { "body": "أن نكون الخيار الأول للعملاء الذين يبحثون عن جودة عالية وتجربة استثنائية في مجالنا." }, "hidden": false },
+    { "type": "MISSION", "title": "الرسالة", "content": { "body": "نقدم منتجات وخدمات مبتكرة تحل مشكلات حقيقية لعملائنا، مع الالتزام بأعلى معايير الجودة والشفافية." }, "hidden": false },
+    { "type": "VALUES", "title": "القيم", "content": { "values": ["الأصالة", "الجودة", "الشفافية", "الابتكار", "المسؤولية"] }, "hidden": false },
+    { "type": "AUDIENCE", "title": "الجمهور", "content": { "primary": "المهنيون العرب من 25 إلى 45 عامًا", "secondary": "الشركات الناشئة" }, "hidden": false },
+    { "type": "PERSONALITY", "title": "شخصية العلامة", "content": { "traits": ["أصيل", "مبتكر", "موثوق", "قريب"] }, "hidden": false },
+    { "type": "POSITIONING", "title": "تموضع العلامة", "content": { "body": "بالنسبة للعملاء الذين يبحثون عن جودة وأصالة، تقدم {{projectName}} حلولًا تجمع بين الخبرة والقرب من العميل." }, "hidden": false },
+    { "type": "TONE", "title": "نبرة الصوت", "content": { "primary": "ودود ومحترف", "secondary": "مباشر وصادق", "avoid": "اللغة الرسمية الجافة" }, "hidden": false },
+    { "type": "LOGO", "title": "الشعار", "content": { "description": "الشعار الرئيسي لـ {{projectName}}" }, "hidden": false },
+    { "type": "LOGO_VARIATIONS", "title": "نسخ الشعار", "content": { "examples": ["النسخة الكاملة", "النسخة المختصرة", "الرمز فقط", "النسخة الأحادية"] }, "hidden": false },
+    { "type": "SAFE_AREA", "title": "المساحة الآمنة", "content": { "description": "اترك مسافة لا تقل عن نصف ارتفاع الرمز حول الشعار." }, "hidden": false },
+    { "type": "MIN_SIZE", "title": "الحد الأدنى للحجم", "content": { "description": "32px رقميًا، 20mm طباعة" }, "hidden": false },
+    { "type": "CORRECT_USE", "title": "الاستخدام الصحيح", "content": { "examples": ["على خلفية بيضاء", "على خلفية داكنة", "بألوان العلامة"] }, "hidden": false },
+    { "type": "WRONG_USE", "title": "الاستخدام الخاطئ", "content": { "examples": ["تغيير الألوان", "إضافة ظلال", "تشويه النسب", "تدوير الشعار"] }, "hidden": false },
+    { "type": "COLORS", "title": "الألوان", "content": { "primary": "#6D4AFF", "secondary": "#F46F5E", "accent": "#C99A3D" }, "hidden": false },
+    { "type": "TYPOGRAPHY", "title": "الخطوط", "content": { "arabic": "IBM Plex Sans Arabic", "english": "Manrope" }, "hidden": false },
+    { "type": "MOODBOARD", "title": "Mood Board", "content": { "description": "صور مرجعية تعبر عن روح العلامة" }, "hidden": false },
+    { "type": "IMAGE_STYLE", "title": "أسلوب الصور", "content": { "body": "صور طبيعية بإضاءة دافئة، تركيز على التفاصيل الإنسانية." }, "hidden": false },
+    { "type": "PATTERNS", "title": "الأنماط", "content": { "description": "زخارف هندسية مبسطة" }, "hidden": false },
+    { "type": "ICONS", "title": "الأيقونات", "content": { "description": "أيقونات خطية رفيعة بأطراف دائرية" }, "hidden": false },
+    { "type": "APPLICATIONS", "title": "تطبيقات الهوية", "content": { "examples": ["بطاقات عمل", "تغليف", "موقع إلكتروني", "وسائل التواصل"] }, "hidden": false },
+    { "type": "DESIGN_TOKENS", "title": "Design Tokens", "content": { "description": "ملف JSON يحتوي على كل قيم التصميم" }, "hidden": false },
+    { "type": "CONTACT", "title": "معلومات التواصل", "content": { "email": "hello@{{projectName}}.com", "website": "www.{{projectName}}.com" }, "hidden": false }
+  ]
+}

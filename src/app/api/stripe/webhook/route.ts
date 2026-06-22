@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-import { getPlanByPriceId } from "@/lib/plans";
+import { getPlanByPriceId } from "@/lib/stripe";
 
 export async function POST(req: Request) {
   const payload = await req.text();

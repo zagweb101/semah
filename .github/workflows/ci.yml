@@ -1,10 +1,9 @@
 name: CI
-
 on:
   push:
-    branches: [main]
+    branches: [master, feat/*]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   ci:
@@ -14,18 +13,12 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
       GOOGLE_CLIENT_ID: test
       GOOGLE_CLIENT_SECRET: test
+      AI_MOCK_MODE: "true"
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
+        with: { node-version: 22, cache: npm }
       - run: npm ci
-
       - run: npm run lint
-
       - run: npm run typecheck
-
       - run: npm run build
