@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -41,9 +42,12 @@ export default async function BlogPostPage({
         {new Date(post.createdAt).toLocaleDateString()}
       </p>
       {post.coverImage && (
-        <img
+        <Image
           src={post.coverImage}
           alt={post.title}
+          width={800}
+          height={400}
+          unoptimized
           className="mt-6 rounded-xl"
         />
       )}

@@ -45,7 +45,7 @@ export default async function ColorsPage({ params }: { params: Promise<{ id: str
           {palette && <div className="card-premium p-6"><h2 className="text-lg font-semibold mb-3">تصدير</h2><div className="grid gap-3 sm:grid-cols-3"><ExportButton label="JSON" url={`/api/projects/${project.id}/colors/${palette.id}/export?type=json`} /><ExportButton label="CSS Variables" url={`/api/projects/${project.id}/colors/${palette.id}/export?type=css`} /><ExportButton label="Tailwind" url={`/api/projects/${project.id}/colors/${palette.id}/export?type=tailwind`} /></div></div>}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Palette className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد لوحة بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على "توليد لوحة الألوان" أعلاه.</p></div>
+        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Palette className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد لوحة بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على «توليد لوحة الألوان» أعلاه.</p></div>
       )}
     </div>
   );

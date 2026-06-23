@@ -39,6 +39,39 @@ export function WelcomeEmail({ name }: { name: string }) {
   );
 }
 
+export function InvitationEmail({
+  orgName,
+  inviterName,
+  inviteUrl,
+}: {
+  orgName: string;
+  inviterName: string;
+  inviteUrl: string;
+}) {
+  return (
+    <Html>
+      <Head />
+      <Preview>دعوة للانضمام إلى {orgName} على سِمَة</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Heading style={heading}>دعوة للانضمام إلى فريق {orgName}</Heading>
+          <Text style={paragraph}>
+            قام {inviterName} بدعوتك للانضمام إلى مؤسسة {orgName} على منصة سِمَة.
+          </Text>
+          <Section style={cta}>
+            <Button style={button} href={inviteUrl}>
+              قبول الدعوة
+            </Button>
+          </Section>
+          <Text style={paragraph}>الرابط صالح لمدة 7 أيام.</Text>
+          <Hr style={hr} />
+          <Text style={footer}>سِمَة — SEMAH AI Brand Studio</Text>
+        </Container>
+      </Body>
+    </Html>
+  );
+}
+
 export function PasswordResetEmail({
   name,
   resetUrl,

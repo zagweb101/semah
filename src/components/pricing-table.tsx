@@ -16,7 +16,7 @@ export function PricingTable() {
 }
 
 function PricingCard({ plan }: { plan: PlanConfig }) {
-  const [_state, formAction, isPending] = useActionState(async (_prev: null, formData: FormData) => { await createCheckoutAction(formData.get("priceId") as string); return null; }, null);
+  const [, formAction, isPending] = useActionState(async (_prev: null, formData: FormData) => { await createCheckoutAction(formData.get("priceId") as string); return null; }, null);
   const isFree = plan.priceMonthly === 0;
   return (
     <Card className={plan.highlight ? "ring-2 ring-violet relative" : "relative"}>

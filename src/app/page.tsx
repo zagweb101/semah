@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Palette, Type, Layers, Eye, BookOpen, Share2, Wand2, ShieldCheck, Clock, Users, ArrowLeft } from "lucide-react";
 
+export const metadata = { title: "سِمَة — SEMAH AI Brand Studio" };
+
 const features = [
   { icon: Wand2, title: "استراتيجية هوية مؤسسية متكاملة", description: "من الـBrand Brief إلى الرؤية والرسالة والقيم المؤسسية والثقافة والسلوك ونبرة التواصل — كل شيء مولّد بالذكاء الاصطناعي وقابل للتعديل." },
   { icon: Layers, title: "ثلاثة اتجاهات مؤسسية", description: "ليس اتجاهًا واحدًا. نولّد ثلاثة اتجاهات متمايزة مع وصف كامل للألوان والخطوط والصور والأشكال، لتختار الأنسب." },

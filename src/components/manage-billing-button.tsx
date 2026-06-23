@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { createPortalAction } from "@/lib/actions/stripe";
 
 export function ManageBillingButton() {
-  const [_state, formAction, isPending] = useActionState(
+  const [, formAction, isPending] = useActionState(
     async () => {
       await createPortalAction();
       return null;

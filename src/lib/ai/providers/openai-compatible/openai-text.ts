@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { zodResponseFormat } from "openai/helpers/zod";
 import type { TextAIProvider, TextGenerationInput, TextGenerationResult, StructuredGenerationInput, StructuredGenerationResult, ProviderHealth } from "@/lib/ai/core/types";
 import { AIProviderError, AITimeoutError, AIRateLimitError, AIAuthenticationError, AIValidationError, AIContentFilterError } from "@/lib/ai/core/errors";
 import { withRetry } from "@/lib/ai/core/retry";
@@ -41,13 +42,14 @@ export class OpenAICompatibleTextProvider implements TextAIProvider {
 
   async generateStructuredData<T>(input: StructuredGenerationInput<T>): Promise<StructuredGenerationResult<T>> {
     logPrompt("openai-structured", { generationType: input.metadata?.generationType });
+    const schemaName = (input.metadata?.generationType as string) ?? "output";
     return withRetry(async () => {
       try {
         const completion = await this.client.chat.completions.create({
           model: this.model,
           messages: [{ role: "system", content: input.systemPrompt }, { role: "user", content: input.userPrompt }],
           temperature: input.temperature ?? 0.5,
-          response_format: { type: "json_object" },
+          response_format: zodResponseFormat(input.outputSchema, schemaName),
         });
         const content = completion.choices[0]?.message?.content ?? "{}";
         let parsed: unknown;

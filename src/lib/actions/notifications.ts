@@ -38,3 +38,28 @@ export async function createNotificationAction(
     data: { userId, title, message, type },
   });
 }
+
+export async function notifyProjectTeam(
+  projectId: string,
+  title: string,
+  message: string,
+  type: string = "info",
+  relatedEntityType?: string,
+  relatedEntityId?: string,
+) {
+  const members = await prisma.projectMember.findMany({
+    where: { brandProjectId: projectId },
+    select: { userId: true },
+  });
+  if (members.length === 0) return;
+  await prisma.notification.createMany({
+    data: members.map((m) => ({
+      userId: m.userId,
+      title,
+      message,
+      type,
+      relatedEntityType,
+      relatedEntityId,
+    })),
+  });
+}

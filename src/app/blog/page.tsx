@@ -2,7 +2,6 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
 
 export const metadata = { title: "Blog" };
 

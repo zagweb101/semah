@@ -2,7 +2,7 @@
  * PDF Export Service using pdf-lib + @pdf-lib/fontkit.
  * Generates Arabic RTL Brand Book + Brand Sheet PDFs.
  */
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFPage, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import { promises as fs } from "fs";
 import path from "path";
 import fontkit from "@pdf-lib/fontkit";
@@ -98,36 +98,125 @@ export async function generateBrandSheetPdf(input: BrandSheetPdfInput): Promise<
   pdfDoc.setTitle(`Brand Sheet — ${input.projectName}`);
   pdfDoc.setAuthor("SEMAH AI Brand Studio");
   const { regular: regularFont, bold: boldFont } = await getFonts(pdfDoc);
+  const primaryColor = hexToRgbColor(input.fields.primaryColor);
 
   const page = pdfDoc.addPage([A4_WIDTH, A4_HEIGHT]);
   let y = A4_HEIGHT - MARGIN;
-  const name = input.projectName;
-  page.drawText(name, { x: A4_WIDTH / 2 - boldFont.widthOfTextAtSize(name, 36) / 2, y, size: 36, font: boldFont, color: OBSIDIAN });
-  y -= 60;
+
+  // Header: initial mark + project name
+  const mark = input.projectName.charAt(0);
+  page.drawCircle({ x: A4_WIDTH - MARGIN - 30, y: y - 30, size: 30, color: primaryColor });
+  page.drawText(mark, { x: A4_WIDTH - MARGIN - 30 - boldFont.widthOfTextAtSize(mark, 28) / 2, y: y - 40, size: 28, font: boldFont, color: rgb(1, 1, 1) });
+  page.drawText(input.projectName, { x: A4_WIDTH - MARGIN - 80 - boldFont.widthOfTextAtSize(input.projectName, 28), y: y - 30, size: 28, font: boldFont, color: OBSIDIAN });
+  y -= 90;
   page.drawLine({ start: { x: MARGIN, y }, end: { x: A4_WIDTH - MARGIN, y }, thickness: 1, color: LIGHT_BORDER });
-  y -= 40;
+  y -= 35;
 
   const f = input.fields;
+  const rightX = A4_WIDTH - MARGIN;
+
+  // Colors
   if (f.primaryColor || f.secondaryColor || f.accentColor) {
-    page.drawText("Colors", { x: A4_WIDTH - MARGIN - boldFont.widthOfTextAtSize("Colors", 11), y, size: 11, font: boldFont, color: MUTED });
-    y -= 30;
-    const colors = [{ label: "Primary", hex: f.primaryColor }, { label: "Secondary", hex: f.secondaryColor }, { label: "Accent", hex: f.accentColor }].filter((c) => c.hex);
-    const swatchSize = 70, gap = 20;
-    let x = A4_WIDTH - MARGIN - swatchSize;
+    y = drawRTLText(page, "الألوان", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 8;
+    const colors: { label: string; hex?: string }[] = [
+      { label: "أساسي", hex: f.primaryColor },
+      { label: "ثانوي", hex: f.secondaryColor },
+      { label: "تمييز", hex: f.accentColor },
+    ].filter((c) => c.hex);
+    const swatchSize = 64;
+    const gap = 18;
+    let x = rightX - swatchSize;
     for (const col of colors) {
-      page.drawRectangle({ x, y: y - swatchSize, width: swatchSize, height: swatchSize, color: hexToRgbColor(col.hex) });
-      page.drawText(col.label, { x: x + swatchSize / 2 - boldFont.widthOfTextAtSize(col.label, 9) / 2, y: y - swatchSize - 15, size: 9, font: boldFont, color: OBSIDIAN });
+      page.drawRectangle({ x, y: y - swatchSize, width: swatchSize, height: swatchSize, color: hexToRgbColor(col.hex), borderColor: LIGHT_BORDER, borderWidth: 1 });
+      page.drawText(col.label, { x: x + swatchSize / 2 - regularFont.widthOfTextAtSize(col.label, 8) / 2, y: y - swatchSize - 14, size: 8, font: regularFont, color: OBSIDIAN });
+      page.drawText(col.hex!, { x: x + swatchSize / 2 - regularFont.widthOfTextAtSize(col.hex!, 8) / 2, y: y - swatchSize - 26, size: 8, font: regularFont, color: MUTED });
       x -= swatchSize + gap;
     }
-    y -= swatchSize + 40;
+    y -= swatchSize + 50;
   }
+
+  // Fonts
+  if (f.arabicFont || f.englishFont) {
+    y = drawRTLText(page, "الخطوط", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 8;
+    if (f.arabicFont) y = drawRTLText(page, `عربي: ${f.arabicFont}`, rightX, y, { font: regularFont, size: 12, color: OBSIDIAN, lineHeight: 18 });
+    if (f.englishFont) y = drawRTLText(page, `إنجليزي: ${f.englishFont}`, rightX, y, { font: regularFont, size: 12, color: OBSIDIAN, lineHeight: 18 });
+    y -= 18;
+  }
+
+  // Personality
   if (f.personality?.length) {
-    page.drawText("Personality", { x: A4_WIDTH - MARGIN - boldFont.widthOfTextAtSize("Personality", 11), y, size: 11, font: boldFont, color: MUTED });
-    y -= 25;
-    const tags = f.personality.join(" · ");
-    page.drawText(tags, { x: A4_WIDTH - MARGIN - regularFont.widthOfTextAtSize(tags, 13), y, size: 13, font: regularFont, color: VIOLET });
+    y = drawRTLText(page, "شخصية العلامة", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 10;
+    const tagHeight = 22;
+    let x = rightX;
+    for (const tag of f.personality) {
+      const tagWidth = regularFont.widthOfTextAtSize(tag, 10) + 16;
+      if (x - tagWidth < MARGIN) { x = rightX; y -= tagHeight + 8; }
+      x -= tagWidth;
+      page.drawRectangle({ x, y: y - tagHeight, width: tagWidth, height: tagHeight, color: primaryColor, opacity: 0.12, borderColor: primaryColor, borderWidth: 0.5 });
+      page.drawText(tag, { x: x + 8, y: y - tagHeight + 6, size: 10, font: regularFont, color: primaryColor });
+    }
+    y -= tagHeight + 22;
   }
+
+  // Keywords
+  if (f.keywords?.length) {
+    y = drawRTLText(page, "كلمات مفتاحية", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 6;
+    y = drawRTLText(page, f.keywords.join(" · "), rightX, y, { font: regularFont, size: 12, color: OBSIDIAN, lineHeight: 18, maxWidth: A4_WIDTH - MARGIN * 2 });
+    y -= 14;
+  }
+
+  // Image style
+  if (f.imageStyle) {
+    y = drawRTLText(page, "أسلوب الصور", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 6;
+    y = drawRTLText(page, f.imageStyle, rightX, y, { font: regularFont, size: 11, color: OBSIDIAN, lineHeight: 16, maxWidth: A4_WIDTH - MARGIN * 2 });
+    y -= 14;
+  }
+
+  // Usage examples
+  if (f.usageExamples?.length) {
+    y = drawRTLText(page, "أمثلة استخدام", rightX, y, { font: boldFont, size: 13, color: MUTED, lineHeight: 18 });
+    y -= 6;
+    for (const example of f.usageExamples) {
+      y = drawRTLText(page, `• ${example}`, rightX, y, { font: regularFont, size: 11, color: OBSIDIAN, lineHeight: 16, maxWidth: A4_WIDTH - MARGIN * 2 });
+    }
+  }
+
+  // Footer
+  page.drawText("SEMAH AI Brand Studio", { x: A4_WIDTH / 2 - regularFont.widthOfTextAtSize("SEMAH AI Brand Studio", 9) / 2, y: 30, size: 9, font: regularFont, color: MUTED });
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
+}
+
+function drawRTLText(
+  page: PDFPage,
+  text: string,
+  rightX: number,
+  startY: number,
+  opts: { font: PDFFont; size: number; color: ReturnType<typeof rgb>; lineHeight: number; maxWidth?: number },
+): number {
+  const maxWidth = opts.maxWidth ?? A4_WIDTH - MARGIN * 2;
+  const words = text.split(/\s+/);
+  let line = "";
+  let y = startY;
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (opts.font.widthOfTextAtSize(test, opts.size) > maxWidth && line) {
+      page.drawText(line, { x: rightX - opts.font.widthOfTextAtSize(line, opts.size), y, size: opts.size, font: opts.font, color: opts.color });
+      line = word;
+      y -= opts.lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) {
+    page.drawText(line, { x: rightX - opts.font.widthOfTextAtSize(line, opts.size), y, size: opts.size, font: opts.font, color: opts.color });
+    y -= opts.lineHeight;
+  }
+  return y;
 }

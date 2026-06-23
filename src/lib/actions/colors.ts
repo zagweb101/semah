@@ -13,6 +13,7 @@ import { getCreditCost } from "@/lib/credits/costs";
 import { getMockMode } from "@/lib/ai/utils";
 import type { BrandBriefInput } from "@/lib/ai/schemas/brand-brief-input";
 import type { ColorPaletteOutput, ColorSwatchOutput } from "@/lib/ai/schemas/color-palette-output";
+import { advanceProjectStatus } from "@/lib/projects/status";
 import { createHash } from "crypto";
 
 export async function generateColorPaletteAction(projectId: string) {
@@ -42,6 +43,7 @@ export async function generateColorPaletteAction(projectId: string) {
     await captureCredits({ organizationId: project.organizationId, userId: session.user.id, brandProjectId: project.id, operationType: "COLOR_PALETTE", idempotencyKey: `${idempotencyKey}:capture`, reservedAmount: cost, actualAmount: cost });
     await recordUsage({ organizationId: project.organizationId, userId: session.user.id, generationType: "COLOR_PALETTE", provider: result.provider, model: result.model, tokensIn: result.tokensIn, tokensOut: result.tokensOut, imagesGenerated: 0, costEstimate: 0 });
     await prisma.projectActivity.create({ data: { brandProjectId: project.id, userId: session.user.id, type: "PALETTE_GENERATED", metadata: { version: newVersion, mock: isMock } } });
+    await advanceProjectStatus(project.id, "COLOR_PALETTE");
     revalidatePath(`/dashboard/projects/${project.id}/colors`);
     return { success: true, version: newVersion, mock: isMock, paletteId: palette.id };
   } catch (error) {

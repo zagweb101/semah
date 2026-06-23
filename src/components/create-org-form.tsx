@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { createOrganizationAction } from "@/lib/actions/organizations";
 
 export function CreateOrgForm() {
-  const [_state, formAction, isPending] = useActionState(
+  const [, formAction, isPending] = useActionState(
     async (_prev: null, formData: FormData) => {
       await createOrganizationAction(formData);
       return null;

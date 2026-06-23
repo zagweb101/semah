@@ -45,7 +45,7 @@ export default async function DirectionsPage({ params }: { params: Promise<{ id:
           })}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Layers className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد اتجاهات بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على "توليد الاتجاهات المؤسسية" أعلاه.</p></div>
+        <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><Layers className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا توجد اتجاهات بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على «توليد الاتجاهات المؤسسية» أعلاه.</p></div>
       )}
     </div>
   );

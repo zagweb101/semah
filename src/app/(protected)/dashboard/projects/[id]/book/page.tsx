@@ -29,7 +29,7 @@ export default async function BrandBookPage({ params }: { params: Promise<{ id: 
         <div className="space-y-4">
           <div className="card-premium p-12 text-center bg-gradient-to-br from-violet/10 via-card to-coral/5"><h1 className="text-5xl font-bold mb-2">{project.nameAr}</h1><p className="text-muted-foreground">دليل العلامة التجارية</p><p className="text-xs text-muted-foreground mt-4">الإصدار {book.version}</p></div>
           {book.sections.filter((s) => !s.hidden).map((section, idx) => {
-            const content = section.content as any;
+            const content = section.content as Record<string, unknown>;
             return (
               <section key={section.id} className="card-premium p-6">
                 <div className="flex items-center gap-2 mb-3"><span className="text-xs text-muted-foreground font-mono">{String(idx + 1).padStart(2, "0")}</span><h2 className="text-xl font-semibold">{SECTION_LABELS[section.type] ?? section.title}</h2></div>
@@ -39,17 +39,17 @@ export default async function BrandBookPage({ params }: { params: Promise<{ id: 
           })}
           <div className="card-premium p-6 mt-8 text-center"><a href={`/api/projects/${project.id}/book/${book.id}/export`} download className="inline-block px-6 py-2.5 rounded-lg bg-violet text-white font-medium hover:bg-violet-dark transition-colors">تصدير PDF</a><p className="text-xs text-muted-foreground mt-2">يدعم العربية RTL</p></div>
         </div>
-      ) : <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><BookOpen className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا يوجد Brand Book بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على "توليد Brand Book" أعلاه.</p></div>}
+      ) : <div className="rounded-2xl border border-dashed border-border p-12 text-center"><div className="size-16 rounded-full bg-violet/10 flex items-center justify-center mx-auto mb-4"><BookOpen className="size-8 text-violet" /></div><h3 className="text-xl font-semibold mb-2">لا يوجد Brand Book بعد</h3><p className="text-muted-foreground max-w-md mx-auto">اضغط على «توليد Brand Book» أعلاه.</p></div>}
     </div>
   );
 }
 
-function SectionContent({ type, content }: { type: string; content: any }) {
+function SectionContent({ type, content }: { type: string; content: Record<string, unknown> }) {
   if (!content) return null;
-  if (["VISION", "MISSION", "POSITIONING", "STORY", "ABOUT", "IMAGE_STYLE", "TONE"].includes(type)) return <p className="leading-relaxed text-muted-foreground">{content.body}</p>;
-  if (["VALUES", "PERSONALITY"].includes(type)) { const items = content.values ?? content.traits ?? []; return <div className="flex flex-wrap gap-2">{items.map((v: string, i: number) => <span key={i} className="px-3 py-1 rounded-full bg-violet/10 text-violet text-sm">{v}</span>)}</div>; }
-  if (type === "COLORS") return <div className="grid grid-cols-3 gap-3">{["primary", "secondary", "accent"].map((k) => content[k] && <div key={k} className="text-center"><div className="h-14 rounded-lg mb-1" style={{ backgroundColor: content[k] }} /><div className="text-xs font-mono">{content[k]}</div></div>)}</div>;
-  if (type === "TYPOGRAPHY") return <div className="grid sm:grid-cols-2 gap-3 text-sm">{content.arabic && <div><strong>عربي:</strong> {content.arabic}</div>}{content.english && <div><strong>إنجليزي:</strong> {content.english}</div>}</div>;
-  if (["WRONG_USE", "CORRECT_USE", "APPLICATIONS", "LOGO_VARIATIONS"].includes(type)) { const items = content.examples ?? []; return <ul className="space-y-1 text-sm text-muted-foreground">{items.map((e: string, i: number) => <li key={i} className="flex items-start gap-2"><span className={`size-1.5 rounded-full mt-2 ${type === "WRONG_USE" ? "bg-danger" : "bg-success"}`} />{e}</li>)}</ul>; }
+  if (["VISION", "MISSION", "POSITIONING", "STORY", "ABOUT", "IMAGE_STYLE", "TONE"].includes(type)) return <p className="leading-relaxed text-muted-foreground">{content.body as string}</p>;
+  if (["VALUES", "PERSONALITY"].includes(type)) { const items = (content.values as string[] | undefined) ?? (content.traits as string[] | undefined) ?? []; return <div className="flex flex-wrap gap-2">{items.map((v, i) => <span key={i} className="px-3 py-1 rounded-full bg-violet/10 text-violet text-sm">{v}</span>)}</div>; }
+  if (type === "COLORS") return <div className="grid grid-cols-3 gap-3">{["primary", "secondary", "accent"].map((k) => { const color = content[k] as string | undefined; return color ? <div key={k} className="text-center"><div className="h-14 rounded-lg mb-1" style={{ backgroundColor: color }} /><div className="text-xs font-mono">{color}</div></div> : null; })}</div>;
+  if (type === "TYPOGRAPHY") return <div className="grid sm:grid-cols-2 gap-3 text-sm">{(content.arabic as string | undefined) && <div><strong>عربي:</strong> {content.arabic as string}</div>}{(content.english as string | undefined) && <div><strong>إنجليزي:</strong> {content.english as string}</div>}</div>;
+  if (["WRONG_USE", "CORRECT_USE", "APPLICATIONS", "LOGO_VARIATIONS"].includes(type)) { const items = (content.examples as string[] | undefined) ?? []; return <ul className="space-y-1 text-sm text-muted-foreground">{items.map((e, i) => <li key={i} className="flex items-start gap-2"><span className={`size-1.5 rounded-full mt-2 ${type === "WRONG_USE" ? "bg-danger" : "bg-success"}`} />{e}</li>)}</ul>; }
   return <pre className="text-xs text-muted-foreground bg-muted/30 rounded p-3 overflow-x-auto">{JSON.stringify(content, null, 2)}</pre>;
 }

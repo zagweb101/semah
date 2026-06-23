@@ -1,5 +1,5 @@
 import type { TextAIProvider, TextGenerationInput, TextGenerationResult, StructuredGenerationInput, StructuredGenerationResult, ProviderHealth } from "@/lib/ai/core/types";
-import { logPrompt, logGeneration } from "@/lib/ai/core/logger";
+import { logPrompt } from "@/lib/ai/core/logger";
 import { loadFixture } from "./fixtures";
 
 export class MockTextProvider implements TextAIProvider {

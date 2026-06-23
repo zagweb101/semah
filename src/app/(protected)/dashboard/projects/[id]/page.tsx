@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, BookOpen, Layers, Palette, Type, Eye, Sparkles, Share2, FileText, CheckCircle2, Clock } from "lucide-react";
+import { ArrowLeft, BookOpen, Layers, Palette, Type, Eye, Sparkles, Share2, FileText, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 
 export const metadata = { title: "نظرة عامة على المشروع" };
 export const dynamic = "force-dynamic";
@@ -15,8 +15,11 @@ export default async function ProjectOverviewPage({ params }: { params: Promise<
   const { id: projectId } = await params;
   const project = await prisma.brandProject.findFirst({
     where: { id: projectId, archivedAt: null },
-    include: { organization: { select: { id: true, name: true } }, brief: true,
-      _count: { select: { strategies: { where: { isCurrent: true } }, visualDirections: true, colorPalettes: { where: { isCurrent: true } }, typographySystems: { where: { isCurrent: true } }, moodboards: { where: { isCurrent: true } }, logoConcepts: true, brandBooks: { where: { isCurrent: true } }, shareLinks: { where: { revokedAt: null } }, comments: { where: { status: "OPEN" } } } } },
+    include: {
+      organization: { select: { id: true, name: true } }, brief: true,
+      revisionRequests: { where: { status: "OPEN" }, orderBy: { createdAt: "desc" }, take: 5 },
+      _count: { select: { strategies: { where: { isCurrent: true } }, visualDirections: true, colorPalettes: { where: { isCurrent: true } }, typographySystems: { where: { isCurrent: true } }, moodboards: { where: { isCurrent: true } }, logoConcepts: true, brandBooks: { where: { isCurrent: true } }, shareLinks: { where: { revokedAt: null } }, comments: { where: { status: "OPEN" } }, revisionRequests: { where: { status: "OPEN" } } } },
+    },
   });
   if (!project) notFound();
 
@@ -66,6 +69,23 @@ export default async function ProjectOverviewPage({ params }: { params: Promise<
           </Link>
         ))}
       </div>
+
+      {project.revisionRequests.length > 0 && (
+        <div className="card-premium p-6 border-coral/30 bg-coral/5">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="size-5 text-coral" />
+            <h2 className="text-lg font-semibold">طلبات تعديل مفتوحة ({project._count.revisionRequests})</h2>
+          </div>
+          <div className="space-y-3">
+            {project.revisionRequests.map((r) => (
+              <div key={r.id} className="rounded-lg border border-border bg-card p-4">
+                <p className="text-sm text-muted-foreground mb-1">{new Date(r.createdAt).toLocaleDateString("ar-SA")}</p>
+                <p className="text-sm">{r.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

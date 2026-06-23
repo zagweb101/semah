@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { assertCan, ProjectPermissions, OrgPermissions } from "@/lib/permissions/can";
-import { createProjectSchema, brandBriefSchema, canTransition, type BrandBrief } from "@/lib/validations/project";
+import { createProjectSchema, type BrandBrief } from "@/lib/validations/project";
 import { getPlan } from "@/lib/plans";
 
 function slugify(text: string): string {

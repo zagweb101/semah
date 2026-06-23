@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: semah-postgres
+    environment:
+      POSTGRES_USER: semah
+      POSTGRES_PASSWORD: semah
+      POSTGRES_DB: semah
+    ports:
+      - "5432:5432"
+    volumes:
+      - semah-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  semah-postgres-data:

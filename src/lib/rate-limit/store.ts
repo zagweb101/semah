@@ -1,8 +1,10 @@
+import { RedisRateLimitStore } from "./redis-store";
+
 export interface RateLimitConfig { limit: number; windowMs: number; }
 export interface RateLimitResult { success: boolean; limit: number; remaining: number; resetAt: number; }
 export interface RateLimitStore { hit(key: string, config: RateLimitConfig): Promise<RateLimitResult>; }
 
-type Bucket = { count: number; resetAt: number };
+ type Bucket = { count: number; resetAt: number };
 
 export class InMemoryRateLimitStore implements RateLimitStore {
   private buckets = new Map<string, Bucket>();
@@ -28,7 +30,9 @@ export class InMemoryRateLimitStore implements RateLimitStore {
 let _store: RateLimitStore | null = null;
 export function getRateLimitStore(): RateLimitStore {
   if (_store) return _store;
-  _store = new InMemoryRateLimitStore();
+  _store = process.env.REDIS_URL
+    ? new RedisRateLimitStore(process.env.REDIS_URL)
+    : new InMemoryRateLimitStore();
   return _store;
 }
 

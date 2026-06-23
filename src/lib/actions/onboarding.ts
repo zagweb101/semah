@@ -19,8 +19,8 @@ export async function completeOnboardingAction(
   await prisma.notification.create({
     data: {
       userId: session.user.id,
-      title: "Welcome to Next Boilerplate!",
-      message: `Thanks for joining! We see you're a ${data.role} looking to build ${data.goals}. Let's get started!`,
+      title: "مرحبًا بك في سِمَة!",
+      message: `سعداء بانضمامك. ابدأ بإنشاء أول مشروع هوية مؤسسية الآن.`,
       type: "success",
     },
   });

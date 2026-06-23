@@ -19,6 +19,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://semah-production.up.railway.app"),
   title: { default: "سِمَة — SEMAH AI Brand Studio", template: "%s | سِمَة" },
   description: "من فكرة إلى هوية تُعرَف. منصة الذكاء الاصطناعي لبناء أنظمة هوية مؤسسية متكاملة.",
   keywords: ["هوية مؤسسية", "تصميم شعار", "Brand Book", "SEMAH", "سِمَة", "استراتيجية علامة تجارية"],

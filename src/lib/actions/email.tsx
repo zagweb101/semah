@@ -1,6 +1,6 @@
 import { render } from "@react-email/components";
 import { resend, FROM_EMAIL } from "@/lib/resend";
-import { WelcomeEmail, PasswordResetEmail } from "@/components/emails";
+import { WelcomeEmail, PasswordResetEmail, InvitationEmail } from "@/components/emails";
 
 export async function sendWelcomeEmail({ to, name }: { to: string; name: string }) {
   if (!resend) {
@@ -13,6 +13,31 @@ export async function sendWelcomeEmail({ to, name }: { to: string; name: string 
     from: FROM_EMAIL,
     to,
     subject: "Welcome to Next Boilerplate!",
+    html,
+  });
+}
+
+export async function sendInvitationEmail({
+  to,
+  orgName,
+  inviterName,
+  inviteUrl,
+}: {
+  to: string;
+  orgName: string;
+  inviterName: string;
+  inviteUrl: string;
+}) {
+  if (!resend) {
+    console.log(`[email] (dev) Invitation to ${to}: ${inviteUrl}`);
+    return;
+  }
+
+  const html = await render(<InvitationEmail orgName={orgName} inviterName={inviterName} inviteUrl={inviteUrl} />);
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to,
+    subject: `دعوة للانضمام إلى ${orgName} على سِمَة`,
     html,
   });
 }

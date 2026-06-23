@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,8 @@ import {
 } from "@/lib/actions/auth";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite");
   const [state, formAction, isPending] = useActionState<
     RegisterState,
     FormData
@@ -52,6 +55,12 @@ export default function RegisterPage() {
           </div>
 
           <form action={formAction} className="space-y-4">
+            {inviteToken && <input type="hidden" name="invite" value={inviteToken} />}
+            {inviteToken && (
+              <p className="rounded-md bg-violet/10 p-3 text-sm text-violet">
+                أنت تنضم إلى فريق عبر دعوة. استخدم نفس البريد الموجه في الدعوة.
+              </p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" name="name" placeholder="John Doe" required />

@@ -19,8 +19,8 @@ export function ShareLinksManager({ projectId, links }: { projectId: string; lin
   const [allowComment, setAllowComment] = useState(true);
   const [allowApprove, setAllowApprove] = useState(true);
 
-  function handleCreate() { startTransition(async () => { const result: any = await createShareLinkAction({ projectId, password: password || null, allowDownload, allowComment, allowApprove }); if (result?.error) toast.error(result.error); else { toast.success("تم إنشاء الرابط"); setShowForm(false); setPassword(""); router.refresh(); } }); }
-  function handleRevoke(linkId: string) { if (!confirm("هل أنت متأكد؟")) return; startTransition(async () => { const result: any = await revokeShareLinkAction(projectId, linkId); if (result?.error) toast.error(result.error); else { toast.success("تم إلغاء الرابط"); router.refresh(); } }); }
+  function handleCreate() { startTransition(async () => { const result = await createShareLinkAction({ projectId, password: password || null, allowDownload, allowComment, allowApprove }) as { error?: string; success?: boolean; token?: string; linkId?: string }; if (result?.error) toast.error(result.error); else { toast.success("تم إنشاء الرابط"); setShowForm(false); setPassword(""); router.refresh(); } }); }
+  function handleRevoke(linkId: string) { if (!confirm("هل أنت متأكد؟")) return; startTransition(async () => { const result = await revokeShareLinkAction(projectId, linkId) as { error?: string; success?: boolean }; if (result?.error) toast.error(result.error); else { toast.success("تم إلغاء الرابط"); router.refresh(); } }); }
   function copyLink(token: string) { navigator.clipboard.writeText(`${window.location.origin}/share/${token}`); toast.success("تم نسخ الرابط"); }
 
   return (

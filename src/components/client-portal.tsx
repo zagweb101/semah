@@ -7,18 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, MessageSquare, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { clientCommentAction, clientApproveAction } from "@/lib/actions/share-links";
+import { clientCommentAction, clientApproveAction, clientRevisionRequestAction } from "@/lib/actions/share-links";
 
-interface Props { token: string; projectName: string; allowComment: boolean; allowApprove: boolean; comments: Array<{ id: string; authorName: string; authorType: string; body: string; createdAt: Date; status: string; }>; approvalStatus?: "PENDING" | "APPROVED" | "REJECTED"; }
+interface Props { token: string; allowComment: boolean; allowApprove: boolean; comments: Array<{ id: string; authorName: string; authorType: string; body: string; createdAt: Date; status: string; }>; approvalStatus?: "PENDING" | "APPROVED" | "REJECTED"; }
 
-export function ClientPortal({ token, projectName, allowComment, allowApprove, comments, approvalStatus }: Props) {
+export function ClientPortal({ token, allowComment, allowApprove, comments, approvalStatus }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [comment, setComment] = useState("");
+  const [revision, setRevision] = useState("");
+  const [showRevision, setShowRevision] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function handleComment() { if (!comment.trim()) return; setError(null); startTransition(async () => { const result = await clientCommentAction(token, { body: comment.trim() }); if (result && "error" in result) { setError(result.error ?? "خطأ"); toast.error(result.error ?? "خطأ"); } else { toast.success("تم إرسال تعليقك"); setComment(""); router.refresh(); } }); }
   function handleApprove() { if (!confirm("هل أنت متأكد من اعتماد هذا المشروع؟")) return; startTransition(async () => { const result = await clientApproveAction(token, { entityType: "PROJECT", entityId: "", comment: "تم الاعتماد" }); if (result && "error" in result) toast.error(result.error); else { toast.success("تم الاعتماد"); router.refresh(); } }); }
+  function handleRevision() { if (!revision.trim()) { toast.error("اكتب وصفًا للتعديل المطلوب"); return; } setError(null); startTransition(async () => { const result = await clientRevisionRequestAction(token, { description: revision.trim() }); if (result && "error" in result) { setError(result.error ?? "خطأ"); toast.error(result.error ?? "خطأ"); } else { toast.success("تم إرسال طلب التعديل"); setRevision(""); setShowRevision(false); router.refresh(); } }); }
 
   return (
     <div className="space-y-6">
@@ -31,6 +34,26 @@ export function ClientPortal({ token, projectName, allowComment, allowApprove, c
           {comments.length > 0 ? <div className="space-y-3">{comments.map((c) => <div key={c.id} className="rounded-lg border border-border p-3"><div className="flex items-center gap-2 mb-1 text-xs"><span className={`px-2 py-0.5 rounded-full ${c.authorType === "CLIENT" ? "bg-coral/10 text-coral" : "bg-violet/10 text-violet"}`}>{c.authorType === "CLIENT" ? "عميل" : "فريق"}</span><span className="text-muted-foreground">{new Date(c.createdAt).toLocaleDateString("ar-SA")}</span></div><p className="text-sm">{c.body}</p></div>)}</div> : <p className="text-sm text-muted-foreground text-center py-4">لا توجد تعليقات بعد</p>}
         </section>
       )}
+      {allowComment && approvalStatus !== "APPROVED" && (
+        <section className="card-premium p-6">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><AlertCircle className="size-4 text-coral" />طلب تعديل</h2>
+          {showRevision ? (
+            <div className="space-y-3">
+              <Textarea value={revision} onChange={(e) => setRevision(e.target.value)} placeholder="اشرح التعديل المطلوب..." rows={3} />
+              <div className="flex items-center gap-2">
+                <Button onClick={handleRevision} disabled={isPending || !revision.trim()} size="sm">{isPending ? "جارٍ الإرسال..." : "إرسال طلب التعديل"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setShowRevision(false)}>إلغاء</Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-4">هل تحتاج إلى تعديلات؟ صف ما تريد تغييره.</p>
+              <Button variant="outline" size="sm" onClick={() => setShowRevision(true)}><AlertCircle className="size-4" />طلب تعديل</Button>
+            </div>
+          )}
+        </section>
+      )}
+
       {allowApprove && approvalStatus !== "APPROVED" && (
         <section className="card-premium p-6 text-center">
           <h2 className="text-lg font-semibold mb-2">اعتماد المشروع</h2>

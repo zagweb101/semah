@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { assertCan, ProjectPermissions, canClient, ClientPermissions } from "@/lib/permissions/can";
+import { notifyProjectTeam } from "@/lib/actions/notifications";
 
 export async function createShareLinkAction(input: { projectId: string; expiresAt?: Date | null; password?: string | null; allowDownload?: boolean; allowComment?: boolean; allowApprove?: boolean }) {
   const session = await auth();
@@ -52,24 +53,48 @@ export async function validateShareLinkAction(token: string, password?: string) 
 }
 
 export async function clientCommentAction(token: string, input: { body: string; relatedEntityType?: string; relatedEntityId?: string }) {
-  const link = await prisma.shareLink.findUnique({ where: { token } });
-  if (!link) return { error: "رابط غير صالح" };
+  const link = await prisma.shareLink.findUnique({ where: { token }, include: { brandProject: { select: { id: true, nameAr: true } } } });
+  if (!link || !link.brandProject) return { error: "رابط غير صالح" };
   const canComment = canClient({ revokedAt: link.revokedAt, expiresAt: link.expiresAt, allowDownload: link.allowDownload, allowComment: link.allowComment, allowApprove: link.allowApprove, passwordHash: link.passwordHash }, ClientPermissions.COMMENT);
   if (!canComment) return { error: "التعليق غير مسموح" };
   const comment = await prisma.comment.create({ data: { brandProjectId: link.brandProjectId, authorName: "عميل", authorType: "CLIENT", relatedEntityType: (input.relatedEntityType as never) ?? "PROJECT", relatedEntityId: input.relatedEntityId ?? link.brandProjectId, body: input.body, status: "OPEN" } });
   await prisma.projectActivity.create({ data: { brandProjectId: link.brandProjectId, type: "COMMENTED", metadata: { commentId: comment.id, source: "client" } } });
+  await notifyProjectTeam(link.brandProjectId, "تعليق جديد من العميل", `علق العميل على مشروع ${link.brandProject.nameAr}`, "info", input.relatedEntityType ?? "PROJECT", input.relatedEntityId ?? link.brandProjectId);
   revalidatePath(`/share/${token}`);
   return { success: true };
 }
 
 export async function clientApproveAction(token: string, input: { entityType: string; entityId: string; comment?: string }) {
-  const link = await prisma.shareLink.findUnique({ where: { token } });
-  if (!link) return { error: "رابط غير صالح" };
+  const link = await prisma.shareLink.findUnique({ where: { token }, include: { brandProject: { select: { id: true, nameAr: true } } } });
+  if (!link || !link.brandProject) return { error: "رابط غير صالح" };
   const canApprove = canClient({ revokedAt: link.revokedAt, expiresAt: link.expiresAt, allowDownload: link.allowDownload, allowComment: link.allowComment, allowApprove: link.allowApprove, passwordHash: link.passwordHash }, ClientPermissions.APPROVE);
   if (!canApprove) return { error: "الاعتماد غير مسموح" };
   const approval = await prisma.approval.create({ data: { brandProjectId: link.brandProjectId, approverType: "CLIENT", approverName: "عميل", approvedEntityType: input.entityType as never, approvedEntityId: input.entityId, comment: input.comment } });
   await prisma.projectActivity.create({ data: { brandProjectId: link.brandProjectId, type: "APPROVED", metadata: { approvalId: approval.id } } });
   if (input.entityType === "PROJECT") await prisma.brandProject.update({ where: { id: link.brandProjectId }, data: { status: "APPROVED" } });
+  await notifyProjectTeam(link.brandProjectId, "اعتماد من العميل", `اعتمد العميل مشروع ${link.brandProject.nameAr}`, "success", input.entityType, input.entityId);
+  revalidatePath(`/share/${token}`);
+  return { success: true };
+}
+
+export async function clientRevisionRequestAction(token: string, input: { relatedEntityType?: string; relatedEntityId?: string; description: string }) {
+  const link = await prisma.shareLink.findUnique({ where: { token }, include: { brandProject: { select: { id: true, nameAr: true } } } });
+  if (!link || !link.brandProject) return { error: "رابط غير صالح" };
+  const canComment = canClient({ revokedAt: link.revokedAt, expiresAt: link.expiresAt, allowDownload: link.allowDownload, allowComment: link.allowComment, allowApprove: link.allowApprove, passwordHash: link.passwordHash }, ClientPermissions.COMMENT);
+  if (!canComment) return { error: "طلب التعديل غير مسموح" };
+  const revision = await prisma.revisionRequest.create({
+    data: {
+      brandProjectId: link.brandProjectId,
+      requestedByType: "CLIENT",
+      requestedByName: "عميل",
+      relatedEntityType: (input.relatedEntityType as never) ?? "PROJECT",
+      relatedEntityId: input.relatedEntityId ?? link.brandProjectId,
+      description: input.description,
+      status: "OPEN",
+    },
+  });
+  await prisma.projectActivity.create({ data: { brandProjectId: link.brandProjectId, type: "REVISION_REQUESTED", metadata: { revisionId: revision.id, source: "client" } } });
+  await notifyProjectTeam(link.brandProjectId, "طلب تعديل من العميل", `طلب العميل تعديلًا على مشروع ${link.brandProject.nameAr}: ${input.description.slice(0, 80)}`, "warning", input.relatedEntityType ?? "PROJECT", input.relatedEntityId ?? link.brandProjectId);
   revalidatePath(`/share/${token}`);
   return { success: true };
 }

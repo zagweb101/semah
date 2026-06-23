@@ -12,7 +12,7 @@ import { getCreditCost } from "@/lib/credits/costs";
 import { getMockMode } from "@/lib/ai/utils";
 import { z } from "zod";
 import type { BrandBriefInput } from "@/lib/ai/schemas/brand-brief-input";
-import { createHash } from "crypto";
+import { advanceProjectStatus } from "@/lib/projects/status";
 
 const BrandSheetSchema = z.object({
   template: z.enum(["DEFAULT", "MINIMAL", "EDITORIAL"]).default("DEFAULT"),
@@ -61,6 +61,7 @@ export async function generateBrandSheetAction(projectId: string) {
     await captureCredits({ organizationId: project.organizationId, userId: session.user.id, brandProjectId: project.id, operationType: "BRAND_SHEET", idempotencyKey: `${idempotencyKey}:capture`, reservedAmount: cost, actualAmount: cost });
     await recordUsage({ organizationId: project.organizationId, userId: session.user.id, generationType: "BRAND_SHEET", provider: result.provider, model: result.model, tokensIn: result.tokensIn, tokensOut: result.tokensOut, imagesGenerated: 0, costEstimate: 0 });
     await prisma.projectActivity.create({ data: { brandProjectId: project.id, userId: session.user.id, type: "SHEET_CREATED", metadata: { mock: isMock } } });
+    await advanceProjectStatus(project.id, "BRAND_SHEET");
     revalidatePath(`/dashboard/projects/${project.id}/sheet`);
     return { success: true, sheetId: sheet.id, mock: isMock };
   } catch (error) {
@@ -103,6 +104,7 @@ export async function generateBrandBookAction(projectId: string) {
     await captureCredits({ organizationId: project.organizationId, userId: session.user.id, brandProjectId: project.id, operationType: "BRAND_BOOK", idempotencyKey: `${idempotencyKey}:capture`, reservedAmount: cost, actualAmount: cost });
     await recordUsage({ organizationId: project.organizationId, userId: session.user.id, generationType: "BRAND_BOOK", provider: result.provider, model: result.model, tokensIn: result.tokensIn, tokensOut: result.tokensOut, imagesGenerated: 0, costEstimate: 0 });
     await prisma.projectActivity.create({ data: { brandProjectId: project.id, userId: session.user.id, type: "BOOK_CREATED", metadata: { version: newVersion, mock: isMock } } });
+    await advanceProjectStatus(project.id, "BRAND_BOOK");
     revalidatePath(`/dashboard/projects/${project.id}/book`);
     return { success: true, bookId: book.id, mock: isMock };
   } catch (error) {

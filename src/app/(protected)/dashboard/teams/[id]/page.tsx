@@ -8,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { InviteMemberForm } from "@/components/invite-member-form";
 import { MemberList } from "@/components/member-list";
+import Link from "next/link";
 
 export const metadata = { title: "Team" };
 
@@ -82,6 +84,22 @@ export default async function TeamDetailPage({
           </CardHeader>
           <CardContent>
             <InviteMemberForm orgId={id} />
+          </CardContent>
+        </Card>
+      )}
+
+      {canManage && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>سجل النشاط</CardTitle>
+            <CardDescription>
+              مراجعة آخر الأنشطة داخل المؤسسة
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" nativeButton={false} render={<Link href={`/dashboard/teams/${id}/audit`} />}>
+              عرض سجل النشاط
+            </Button>
           </CardContent>
         </Card>
       )}

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { can, ProjectPermissions } from "@/lib/permissions/can";
-import { generateBrandSheetPdf } from "@/lib/exports/pdf";
+import { generateBrandSheetPdf, type BrandSheetPdfInput } from "@/lib/exports/pdf";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ projectI
   if (!allowed) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const sheet = await prisma.brandSheet.findUnique({ where: { brandProjectId: projectId } });
   if (!sheet) return NextResponse.json({ error: "Brand sheet not found" }, { status: 404 });
-  const data = sheet.data as any;
+  const data = sheet.data as unknown as BrandSheetPdfInput;
   try {
     const pdfBuffer = await generateBrandSheetPdf({ projectName: project.nameAr, template: sheet.template, fields: data.fields ?? {} });
     return new NextResponse(new Uint8Array(pdfBuffer), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="brand-sheet.pdf"`, "Content-Length": String(pdfBuffer.length), "Cache-Control": "private, no-cache" } });

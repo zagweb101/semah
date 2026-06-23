@@ -12,6 +12,7 @@ import { getCreditCost } from "@/lib/credits/costs";
 import { getMockMode } from "@/lib/ai/utils";
 import { z } from "zod";
 import type { BrandBriefInput } from "@/lib/ai/schemas/brand-brief-input";
+import { advanceProjectStatus } from "@/lib/projects/status";
 import { createHash } from "crypto";
 
 const LogoConceptOutputSchema = z.object({
@@ -62,6 +63,7 @@ export async function generateLogoConceptsAction(projectId: string) {
     await captureCredits({ organizationId: project.organizationId, userId: session.user.id, brandProjectId: project.id, operationType: "LOGO_CONCEPTS", idempotencyKey: `${idempotencyKey}:capture`, reservedAmount: cost, actualAmount: cost });
     await recordUsage({ organizationId: project.organizationId, userId: session.user.id, generationType: "LOGO_CONCEPTS", provider: result.provider, model: result.model, tokensIn: result.tokensIn, tokensOut: result.tokensOut, imagesGenerated: 0, costEstimate: 0 });
     await prisma.projectActivity.create({ data: { brandProjectId: project.id, userId: session.user.id, type: "LOGO_GENERATED", metadata: { version: newVersion, count: result.structuredData.concepts.length, mock: isMock } } });
+    await advanceProjectStatus(project.id, "LOGO_CONCEPTS");
     revalidatePath(`/dashboard/projects/${project.id}/logo`);
     return { success: true, version: newVersion, count: result.structuredData.concepts.length, mock: isMock };
   } catch (error) {
