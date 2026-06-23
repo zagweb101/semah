@@ -40,17 +40,23 @@ A production-ready Next.js app for building corporate/brand identities with AI. 
 6. `npm run dev`
 
 ## Deployment
+- Live URL: https://semah-production.up.railway.app
+- Railway project: `semah` (Project ID: `5fb5bfbf-3735-40f6-bf5d-fe812a157840`)
 - `railway.toml` runs `npx prisma migrate deploy && npm run start`.
+- Deploy via CLI: `railway up --service <service-id> --detach --yes`
 - Ensure all SEMAH migrations (including `20260622180000_add_semah_domain`) are present before deploying.
+- The proxy (`src/proxy.ts`) must pass `secureCookie` to `getToken` for HTTPS deployments.
 - Required environment variables for production:
   - `DATABASE_URL`, `AUTH_SECRET`
   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
   - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_*`
   - `RESEND_API_KEY`, `FROM_EMAIL`
   - `NEXT_PUBLIC_APP_URL`
-  - Optional AI keys (mock mode works without them): `AI_TEXT_*`, `AI_IMAGE_*`
+  - `AI_MOCK_MODE` — set `true` to run without AI keys
+  - Optional AI keys: `AI_TEXT_*`, `AI_IMAGE_*`
 - After deploying, verify:
   - `GET /api/health` returns `ok`.
   - `GET /api/health/db` returns `database: connected`.
   - `POST /api/auth/[...nextauth]` accepts credentials login.
   - Registration/login emails are sent via Resend once configured.
+- Seed production DB: create a TCP proxy for Postgres, then run `npm run db:seed` with the proxy URL.
