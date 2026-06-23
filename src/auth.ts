@@ -11,34 +11,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   trustHost: true,
   useSecureCookies: true,
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
-        secure: true,
-      },
-    },
-    callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
-      options: {
-        sameSite: "none",
-        path: "/",
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name: `__Secure-next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
-        secure: true,
-      },
-    },
-  },
   pages: {
     signIn: "/login",
   },
@@ -53,22 +25,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { type: "password" },
       },
       authorize: async (credentials) => {
-        const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
+        try {
+          const parsed = loginSchema.safeParse(credentials);
+          if (!parsed.success) {
+            console.error("[auth] Validation failed:", parsed.error.issues);
+            return null;
+          }
 
-        const { email, password } = parsed.data;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.password) return null;
+          const { email, password } = parsed.data;
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (!user || !user.password) {
+            console.error("[auth] User not found or no password:", email);
+            return null;
+          }
 
-        const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return null;
+          const valid = await bcrypt.compare(password, user.password);
+          if (!valid) {
+            console.error("[auth] Password mismatch for:", email);
+            return null;
+          }
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        };
+          console.log("[auth] Login successful for:", email);
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("[auth] Authorize error:", error);
+          return null;
+        }
       },
     }),
   ],
