@@ -5,7 +5,7 @@ const publicPaths = ["/", "/login", "/register", "/pricing", "/blog", "/share"];
 const publicPathPrefixes = ["/api/auth", "/api/health", "/api/ai/health", "/share/", "/blog/"];
 
 export async function proxy(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: req.nextUrl.protocol === "https:" });
   const isLoggedIn = !!token;
   const { nextUrl } = req;
   const isPublic = publicPaths.includes(nextUrl.pathname) || publicPathPrefixes.some((p) => nextUrl.pathname.startsWith(p));
